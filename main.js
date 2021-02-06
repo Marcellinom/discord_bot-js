@@ -82,4 +82,4 @@ client.on('message', async (message) => {
     break;
   }    // other commands...
 });
-client.login(process.env.token)
+client.login(process.env.tokenHeroku)
