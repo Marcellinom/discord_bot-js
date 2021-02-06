@@ -9,6 +9,7 @@ client.once('ready', ()=>{
 client.on("message", async (message) => {
   if (message.author.id == '807462756113842176') return;
   if (message.author.id == '804604322117189683'){
+  try{
     for(var k in notifDict){
       var member = message.guild.members.fetch(notifDict[k])
       console.log(val)
@@ -16,6 +17,8 @@ client.on("message", async (message) => {
       //DM users
       ;(await member).send(message.content)
     }
+  } catch (e) {
+    console.log(e);
   }
   });
 client.on('message', async (message) => {
