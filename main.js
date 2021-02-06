@@ -14,9 +14,9 @@ client.on("message", async (message) => {
       var member = message.guild.members.fetch(val)
       console.log(val)
       console.log(member)
-      //let DM users
+      //DM users
       ;(await member).send(message.content)
     }
   }
   });
-client.login('ODA3NDYyNzU2MTEzODQyMTc2.YB4WSg._xCFd2J0FyIEt71CeLlDwqzoJWE')
+client.login(process.env.TOKEN)
