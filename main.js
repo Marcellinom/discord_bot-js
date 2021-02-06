@@ -5,7 +5,7 @@ client.once('ready', ()=>{
     console.log('logged in!')
 })
 const member_to_DM = [
-  '269397446516408331', '515940939257085966', '418177899712086016'
+  '269397446516408331', '515940939257085966'
 ]
 client.on("message", async (message) => {
   if (message.author.id == '807462756113842176') return;
