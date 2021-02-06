@@ -4,7 +4,7 @@ const client = new discord.Client()
 client.once('ready', ()=>{
     console.log('logged in!')
 })
-member_to_DM = [
+const member_to_DM = [
   '269397446516408331', '515940939257085966', '418177899712086016'
 ]
 client.on("message", async (message) => {
