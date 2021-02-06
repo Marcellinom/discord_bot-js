@@ -1,6 +1,7 @@
 const discord = require('discord.js')
 const client = new discord.Client()
-const { prefix, token } = require('./config.json');
+//const { prefix, token } = require('./config.json');
+const prefix = "!" 
 var notifDict = {};
 client.once('ready', ()=>{
     console.log('logged in!')
@@ -42,27 +43,42 @@ client.on('message', async (message) => {
         }
         console.log(userToDM)
           //message.channel.send(`${userToDM}`);
+          let man = await message.guild.members.fetch(userToDM)
+          console.log(man)
+          if(man.user.bot){
+            message.channel.send(`you can assign a bot to be notified!`);
+          } else {
+            if (notifDict[userToDM]) {
+              message.channel.send(`${man.user.username} is already on the list!`);
+            } else {
+              notifDict[userToDM] = userToDM;
+              message.channel.send(`${man.user.username} is assigned to be notified`);
+            }
+          }
+      } else {
+       message.channel.send(`invalid input!`);
       }
-      notifDict[userToDM] = userToDM;
-      let man = await message.guild.members.fetch(userToDM)
-      message.channel.send(`${man.user.username} is assigned to be notified`);
       break;
-    case 'unnotif':
+    case 'remove':
       if (userToDM.startsWith('<@') && userToDM.endsWith('>')) {
         userToDM = userToDM.slice(2, -1);
         
         if (userToDM.startsWith('!')) {
           userToDM = userToDM.slice(1);
         }
+        let man = await message.guild.members.fetch(userToDM)
+          if (notifDict[userToDM]) {
+            if(delete notifDict[userToDM]){
+              message.channel.send(`${man.user.username} is removed from notification list!`);
+            } else {
+              message.channel.send(`failed to delete ${man.user.username} from notification list!`);
+            }
+          } else {
+            message.channel.send(`User ${man.user.username} didn't exist on the list!`);
+          }
+      } else {
+        message.channel.send(`invalid input!`);
       }
-      const ind = notifDict.indexOf(userToDM);
-        if (ind > -1) {
-          notifDict.splice(ind, 1);
-          let man = await message.guild.members.fetch(userToDM)
-          message.channel.send(`${man.user.username} is removed from notification list!`);
-        } else {
-          message.channel.send(`User doesn't exist!`);
-        }
       break;
     case 'list':
       console.log(arg)
@@ -82,4 +98,4 @@ client.on('message', async (message) => {
     break;
   }    // other commands...
 });
-client.login(process.env.token)
+client.login(process.env.tokenHeroku)
