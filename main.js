@@ -12,8 +12,6 @@ client.on("message", async (message) => {
   try{  
     for(var k in notifDict){
       var member = message.guild.members.fetch(notifDict[k])
-      console.log(val)
-      console.log(member)
       //DM users
       ;(await member).send(message.content)
     }
