@@ -315,17 +315,16 @@ client.on('messageReactionAdd', async(data, user) =>{
         })
         .then(message => {
           message = message.first()
-          message.delete();
           if (Number.isInteger(message.content-'0')) {
             if(message.content <= max_page && message.content > 0){
               page_info.edit(`showing ${message.content}/${max_page} page`)
               const konten_edited = konten.replace(`/${current_page}.`, `/${message.content}.`)
               data.message.edit(konten_edited)
-            } else if(message.content < 0){
+            } else if(message.content-'0' < 0){
               page_info.edit(`showing 1/${max_page} page`)
               const konten_edited = konten.replace(`/${current_page}.`, `/1.`)
               data.message.edit(konten_edited)
-            } else if(message.content > max_page){
+            } else if(message.content-'0' > max_page){
               page_info.edit(`showing ${max_page}/${max_page} page`)
               const konten_edited = konten.replace(`/${current_page}.`, `/${max_page}.`)
               data.message.edit(konten_edited)
@@ -334,6 +333,7 @@ client.on('messageReactionAdd', async(data, user) =>{
             data.message.channel.send(`invalid input!`)
           }
           data.message.reactions.resolve('🔢').users.remove(user.id);
+          message.delete();
         })
         .catch(collected => {
           data.message.channel.send('Timeout!');
