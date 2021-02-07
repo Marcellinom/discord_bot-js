@@ -2,7 +2,7 @@ const discord = require('discord.js')
 const client = new discord.Client()
 //const { prefix, token } = require('./config.json');
 const prefix = "!" 
-var notifDict = [{'269397446516408331': '269397446516408331',}];
+var notifDict = {'269397446516408331': '269397446516408331',};
 client.once('ready', ()=>{
     console.log('logged in!')
 })
@@ -43,7 +43,7 @@ client.on('message', async (message) => {
         console.log(userToDM)
           //message.channel.send(`${userToDM}`);
           let man = await message.guild.members.fetch(userToDM)
-          console.log(man)
+          console.log(man.user)
           if(man.user.bot){
             message.channel.send(`you can't assign a bot to be notified!`);
           } else {
@@ -77,7 +77,7 @@ client.on('message', async (message) => {
       } else {
         message.channel.send(`invalid input!`);
       }
-  } else if (command == 'list'){
+  } else if (command == 'show' || command == 'list'){
       if(arg.includes('notif')){
       try{
         var tagged = "";
@@ -86,20 +86,18 @@ client.on('message', async (message) => {
           var member = await message.guild.members.fetch(notifDict[k])
           tagged = tagged+`${member.user.username}, `;
         }
-          if(tagged != ""){
-          console.log(tagged)
-          message.channel.send(`${tagged} are who will be notified`)
-        } else {
-          message.channel.send("empty")
-        }
       } catch (e) {
         message.channel.send(`something wrong has occured!`) 
         console.log(e)
         return;
       }
-    }
-  } else {
-    message.channel.send("command does not exist!")
-  }
+        if(tagged != ""){
+          console.log(tagged)
+          message.channel.send(`${tagged} are who will be notified`)
+        } else {
+          message.channel.send("empty")
+        }
+      }
+  }    // other commands...
 });
 client.login(process.env.tokenHeroku)
