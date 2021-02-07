@@ -11,13 +11,18 @@ client.once('ready', () => {
   console.log('logged in!')
 })
 client.on("message", async (message) => {
+  console.log(message)
   if (message.author.id == '807462756113842176') return;
   if (message.author.id == '804604322117189683') {
     try {
       for (var k in notifDict) {
         var member = message.guild.members.fetch(notifDict[k])
           //DM users
+        if(message.attachments.array()[0].attachment){
+          ; (await member).send(message.attachments.array()[0].attachment)
+        } else {
           ; (await member).send(message.content)
+        }
       }
     } catch (e) {
       console.log(e)
