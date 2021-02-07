@@ -47,7 +47,7 @@ client.on('message', async (message) => {
         console.log(userToDM)
           //message.channel.send(`${userToDM}`);
           let man = await message.guild.members.fetch(userToDM)
-          console.log(man)
+          console.log(man.user)
           if(man.user.bot){
             message.channel.send(`you can't assign a bot to be notified!`);
           } else {
