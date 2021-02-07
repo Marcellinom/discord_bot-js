@@ -77,7 +77,7 @@ client.on('message', async (message) => {
       } else {
         message.channel.send(`invalid input!`);
       }
-  } else if (command == 'show' || command == 'list'){
+  } else if (command == 'list'){
       if(arg.includes('notif')){
       try{
         var tagged = "";
@@ -86,18 +86,20 @@ client.on('message', async (message) => {
           var member = await message.guild.members.fetch(notifDict[k])
           tagged = tagged+`${member.user.username}, `;
         }
-      } catch (e) {
-        message.channel.send(`something wrong has occured!`) 
-        console.log(e)
-        return;
-      }
-        if(tagged != ""){
+          if(tagged != ""){
           console.log(tagged)
           message.channel.send(`${tagged} are who will be notified`)
         } else {
           message.channel.send("empty")
         }
+      } catch (e) {
+        message.channel.send(`something wrong has occured!`) 
+        console.log(e)
+        return;
       }
-  }    // other commands...
+    }
+  } else {
+    message.channel.send("command does not exist!")
+  }
 });
 client.login(process.env.tokenHeroku)
