@@ -344,4 +344,4 @@ client.on('messageReactionAdd', async(data, user) =>{
   }
 })
 
-client.login('ODA3NDYyNzU2MTEzODQyMTc2.YB4WSg.m5xMVvVWExrS16hnwqfBBboS2ws')
+client.login(procces.env.tokenHeroku)
