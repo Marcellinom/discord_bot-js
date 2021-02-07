@@ -29,14 +29,11 @@ client.on('message', async (message) => {
   let arg = args[1]
   let comTemp = args
   const command = comTemp.shift().toLowerCase();
-  switch(command){
-    case 'ping':
+  if(command == 'ping'){
       message.channel.send('Pong.');
-      break;
-      case 'beep':
+  } else if(command =='beep'){
       message.channel.send(`boob`);
-      break;
-    case 'notif':
+  } else if(command == 'notif'){
       if (userToDM.startsWith('<@') && userToDM.endsWith('>')) {
         userToDM = userToDM.slice(2, -1);
       
@@ -60,8 +57,7 @@ client.on('message', async (message) => {
       } else {
        message.channel.send(`invalid input!`);
       }
-      break;
-    case 'remove':
+  } else if(command == 'remove'){
       if (userToDM.startsWith('<@') && userToDM.endsWith('>')) {
         userToDM = userToDM.slice(2, -1);
         
@@ -81,8 +77,7 @@ client.on('message', async (message) => {
       } else {
         message.channel.send(`invalid input!`);
       }
-      break;
-    case 'list':
+  } else if (command == 'show' || command == 'list'){
       console.log(arg)
       if(arg.includes('notif')){
         var tagged = "";
@@ -97,7 +92,8 @@ client.on('message', async (message) => {
           message.channel.send("empty")
         }
       }
-    break;
-  }    // other commands...
+  } else {
+    message.channel.send("command doesnt exist!")
+  }
 });
 client.login(process.env.tokenHeroku)
