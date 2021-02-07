@@ -344,4 +344,4 @@ client.on('messageReactionAdd', async(data, user) =>{
   }
 })
 
-client.login(procces.env.tokenHeroku)
+client.login(process.env.tokenHeroku)
