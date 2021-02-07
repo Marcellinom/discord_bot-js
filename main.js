@@ -2,7 +2,7 @@ const discord = require('discord.js')
 const client = new discord.Client()
 //const { prefix, token } = require('./config.json');
 const prefix = "!" 
-var notifDict = {};
+var notifDict = [{'269397446516408331': '269397446516408331',}];
 client.once('ready', ()=>{
     console.log('logged in!')
 })
@@ -92,8 +92,6 @@ client.on('message', async (message) => {
           message.channel.send("empty")
         }
       }
-  } else {
-    message.channel.send("command doesnt exist!")
-  }
+  }    // other commands...
 });
 client.login(process.env.tokenHeroku)
