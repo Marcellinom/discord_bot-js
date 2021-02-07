@@ -308,8 +308,8 @@ client.on('messageReactionAdd', async(data, user) =>{
         let filter = m => m.author.id === user.id
     data.message.channel.send(`(waiting 10s): input the desired page!`)
     .then( mes => {
-      mes.delete(10000)
-    })
+      mes.delete({timeout: 5000});
+    }).catch(console.log)
       // awaiting input reply
       data.message.channel.awaitMessages(filter, {
           max: 1,
