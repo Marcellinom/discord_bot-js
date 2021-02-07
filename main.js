@@ -81,7 +81,7 @@ client.on('message', async (message) => {
       } else {
         message.channel.send(`invalid input!`);
       }
-  } else if (command === 'show' || command === 'list'){
+  } else if (command == 'show' || command == 'list'){
       if(arg.includes('notif')){
       try{
         var tagged = "";
@@ -103,14 +103,16 @@ client.on('message', async (message) => {
         }
       }
   } else if (command == 'nh'){
-    if(message.channel.nsfw) {
+    if(!message.channel.nsfw) {
+      message.channel.send('this isn\'t an NSFW channel dummy :3');
+      return;
+    }
     switch(args[0]){
-//-------------------------------------------------------------------------------- read
       case 'read':
-        let mes_read = await message.channel.send('Loading... Please Wait.');
         try{
+        let mes_read = await message.channel.send('Loading... Please Wait.');
         var temp_read;
-        if(args[1] === 'random'){
+        if(args[1] == 'random'){
           temp_read = Math.floor(Math.random() * (340000 - 100000 + 1) + 100000);
         } else if(Number.isInteger(args[1]-'0')){
           temp_read = args[1];
@@ -132,26 +134,25 @@ client.on('message', async (message) => {
               let msg = await message.channel.send(data_read['pages'][0]);
               mes_read.delete();
               //console.log(msg);
-              await msg.react('⏪');
-              await msg.react('◀️');
-              await msg.react('🔢');
-              await msg.react('▶️');
-              await msg.react('⏩');
-              await keyv.set(msg.id, notif.id);
-              // save code id and current page to change later
-              //get max page
-              await keyv.set(notif.id, data_read['details']['pages']);
+            await msg.react('⏪');
+            await msg.react('◀️');
+            await msg.react('🔢');
+            await msg.react('▶️');
+            await msg.react('⏩');
+            await keyv.set(msg.id, notif.id);
+          // save code id and current page to change later
+          //get max page
+          await keyv.set(notif.id, data_read['details']['pages']);
         } catch(e) {
           message.channel.send('an error has occured');
           console.log(e)
         }
         //await nh.put(notif.id, data['details']['pages']);  
       break;
-//-------------------------------------------------------------------------------- detail
       case 'detail':
         let mes_detail = await message.channel.send('Loading... Please Wait.');
         var temp_detail;
-        if(args[1] === 'random'){
+        if(args[1] == 'random'){
            temp_detail = Math.floor(Math.random() * (340000 - 100000 + 1) + 100000);
            console.log(temp_detail)
         } else if(Number.isInteger(args[1]-'0')){
@@ -161,6 +162,7 @@ client.on('message', async (message) => {
           return;
         }
         try{
+
           const req_detail = await fetch(
             'https://nhentai-pages-api.herokuapp.com/' + temp_detail
             ); // nh get pict API
@@ -227,7 +229,6 @@ client.on('message', async (message) => {
             console.log(e)
           }
       break;
-//-------------------------------------------------------------------------------- popular
       case 'popular':
         let mes_pop = await message.channel.send('Fetching data... Please Wait.');
         const req_pop = await fetch(
@@ -241,11 +242,11 @@ client.on('message', async (message) => {
           );
         }
       break;
+      default:
+        message.channel.send(`command didn't exist!`)
+        break;
     }
-  } else {
-    message.channel.send('this isn\'t an NSFW channel dummy :3');
   } 
-}
 });
 
 client.on('messageReactionAdd', async(data, user) =>{
@@ -343,4 +344,4 @@ client.on('messageReactionAdd', async(data, user) =>{
   }
 })
 
-client.login(process.env.tokenHeroku)
+client.login('ODA3NDYyNzU2MTEzODQyMTc2.YB4WSg.m5xMVvVWExrS16hnwqfBBboS2ws')
