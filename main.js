@@ -45,7 +45,7 @@ client.on('message', async (message) => {
           let man = await message.guild.members.fetch(userToDM)
           console.log(man)
           if(man.user.bot){
-            message.channel.send(`you can assign a bot to be notified!`);
+            message.channel.send(`you can't assign a bot to be notified!`);
           } else {
             if (notifDict[userToDM]) {
               message.channel.send(`${man.user.username} is already on the list!`);
@@ -78,15 +78,21 @@ client.on('message', async (message) => {
         message.channel.send(`invalid input!`);
       }
   } else if (command == 'show' || command == 'list'){
-      console.log(arg)
       if(arg.includes('notif')){
+      try{
         var tagged = "";
         for(var k in notifDict){
           //message.channel.send(notifDict[k]);
           var member = await message.guild.members.fetch(notifDict[k])
           tagged = tagged+`${member.user.username}, `;
         }
+      } catch (e) {
+        message.channel.send(`something wrong has occured!`) 
+        console.log(e)
+        return;
+      }
         if(tagged != ""){
+          console.log(tagged)
           message.channel.send(`${tagged} are who will be notified`)
         } else {
           message.channel.send("empty")
