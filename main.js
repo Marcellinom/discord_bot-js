@@ -306,7 +306,10 @@ client.on('messageReactionAdd', async(data, user) =>{
       break;
       case '🔢':
         let filter = m => m.author.id === user.id
-    let alert = await data.message.channel.send(`(waiting 10s): input the desired page!`)
+    data.message.channel.send(`(waiting 10s): input the desired page!`)
+    .then( mes => {
+      mes.delete(10000)
+    })
       // awaiting input reply
       data.message.channel.awaitMessages(filter, {
           max: 1,
@@ -337,8 +340,8 @@ client.on('messageReactionAdd', async(data, user) =>{
         })
         .catch(collected => {
           data.message.channel.send('Timeout!');
+          data.message.reactions.resolve('🔢').users.remove(user.id);
         })
-        alert.delete()
       break;
     }
   }
