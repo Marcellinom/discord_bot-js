@@ -129,9 +129,8 @@ client.on('message', async (message) => {
       message.channel.send('this isn\'t an NSFW channel dummy :3');
       return;
     }
-    switch (args[0]) {
+if(args[0] === 'read') {
 //-------------------------------------------------------------------------------------------read
-      case 'read':
         console.log(`tags: ${tagArg}`)
         try {
           let mes_read = await message.channel.send('Loading... Please Wait.');
@@ -210,9 +209,8 @@ client.on('message', async (message) => {
           console.log(e)
         }
         //await nh.put(notif.id, data['details']['pages']);  
-        break;
 //------------------------------------------------------------------------------------------- detail
-      case 'detail':
+} else if (args[0].includes('det')){      
         try {
         let mes_detail = await message.channel.send('Loading... Please Wait.');
         var temp_detail;
@@ -323,9 +321,8 @@ client.on('message', async (message) => {
           message.channel.send('an error has occured');
           console.log(e)
         }
-        break;
 //------------------------------------------------------------------------------------------- popular
-      case 'popular':
+} else if(args[0].includes('popu')){      
         let mes_pop = await message.channel.send('Fetching data... Please Wait.');
         const req_pop = await fetch(
           'https://nhentai-pages-api.herokuapp.com/popular'
@@ -337,12 +334,41 @@ client.on('message', async (message) => {
             'https://nhentai.net/g/' + data_pop['results'][i]['bookId']
           );
         }
-        break;
-      default:
-        message.channel.send(`command didn't exist!`)
-        break;
-    }
+} else if (args[0] === 'dl' || args[0].includes('downl')){
+  try {
+    let mes_dl= await message.channel.send('Loading... Please Wait.');
+    var temp_detail;
+    if (args[1] == 'random') {
+      temp_dl = Math.floor(Math.random() * (340000 - 100000 + 1) + 100000);
+      //console.log(temp_detail)
+    } else if (Number.isInteger(args[1] - '0')) {
+      temp_dl = args[1];
+    } else if(args[1].includes('https://nhentai.net/g/')){
+      temp_dl = args[1].replace('https://nhentai.net/g/', '')
+    } else {
+      message.channel.send('invalid input!');
+      return;
+    } 
+    const req_dl = await fetch(
+      'https://nhentai-pages-api.herokuapp.com/' + temp_dl
+      ); // nh get pict API
+      data_dl = await req_dl.json();
+    if(data_dl['status']){ message.channel.send(`an error has occured`);return;  }
+    mes_dl.delete();
+    const embed_dl = new discord.MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle(`Download ${data_dl['title']}`)
+            .setDescription(`Pages: ${data_dl['pages'].length}`)
+            .setURL(`https://nh-download.herokuapp.com/download/nhentai/${temp_dl}/zip`)
+            .setThumbnail(data_dl['pages'][0])
+
+      message.channel.send(embed_dl);
+  }catch (e) {
+      message.channel.send(`an error has occured`)
+      console.log(e)
   }
+} else message.channel.send(`command didn't exist!`)
+}
 });
 
 client.on('messageReactionAdd', async (data, user) => {
