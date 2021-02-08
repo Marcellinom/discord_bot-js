@@ -1,4 +1,5 @@
 const discord = require('discord.js')
+const { MessageAttachment } = require('discord.js');
 const Keyv = require('keyv');
 const fetch = require('node-fetch');
 // import discord from 'discord.js'
@@ -353,20 +354,17 @@ if(args[0] === 'read') {
       message.channel.send('invalid input!');
       return;
     } 
-    const req_dl = await fetch(
-      'https://nhentai-pages-api.herokuapp.com/' + temp_dl
-      ); // nh get pict API
-      data_dl = await req_dl.json();
-    if(data_dl['status']){ message.channel.send(`an error has occured`);return;  }
-    mes_dl.delete();
+    const req_url = await fetch(`https://nhentai-pages-api.herokuapp.com/${temp_dl}`);
+    const data_url = await req_url.json()
+    if(data_url['status']){ message.channel.send(`an error has occured`);return;  }
     const embed_dl = new discord.MessageEmbed()
             .setColor('#0099ff')
-            .setTitle(`Download ${data_dl['title']}`)
-            .setDescription(`Pages: ${data_dl['pages'].length}`)
+            .setTitle(`DOWNLOAD ${data_url['title']}`)
             .setURL(`https://nh-download.herokuapp.com/download/nhentai/${temp_dl}/zip`)
-            .setThumbnail(data_dl['pages'][0])
+            .setDescription(`Pages: ${data_url['pages'].length} pages`)
+            .setThumbnail(data_url['pages'][0])
 
-      message.channel.send(embed_dl);
+      message.channel.send(embed_dl);mes_dl.delete();
   }catch (e) {
       message.channel.send(`an error has occured`)
       console.log(e)
@@ -472,4 +470,5 @@ client.on('messageReactionAdd', async (data, user) => {
     }
   }
 })
-client.login(process.env.tokenHeroku)
+client.login('ODA3NDYyNzU2MTEzODQyMTc2.YB4WSg.9zwCx90Mnq24QUvOLPRe7zn2_LY')
+// client.login(process.env.tokenHeroku)
