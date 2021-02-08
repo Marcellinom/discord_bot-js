@@ -154,7 +154,8 @@ if(args[0] === 'read') {
                 ); // nh get pict API
                 data_read = await req_read.json();
                 if(data_read['status']) continue start_position;
-                console.log(data_read['details']['tags'])
+                console.log(data_read['details']['languages'])
+                if(typeof data_read['details']['languages'] === 'undefined') continue start_position;
                 if(!data_read['details']['languages'].toString().toLowerCase().includes('english')) continue start_position;
                 break;
               }
@@ -172,6 +173,7 @@ if(args[0] === 'read') {
                 console.log(temp_detail)
                 if(data_read['status']) continue start_position;
                 console.log(data_read['details']['tags'])
+                if(typeof data_read['details']['tags'] === 'undefined') continue start_position;
                 if(!data_read['details']['tags'].toString().toLowerCase().includes(tagArg)) continue start_position;
                 break;
               }
@@ -235,6 +237,7 @@ if(args[0] === 'read') {
               data_detail = await req_detail.json();
               if(data_detail['status']) continue start_position;
               console.log(data_detail['details']['languages'])
+              if(typeof data_detail['details']['languages'] === 'undefined') continue start_position;
               if(!data_detail['details']['languages'].toString().toLowerCase().includes('english')) continue start_position;
               break;
             }
@@ -251,6 +254,7 @@ if(args[0] === 'read') {
               console.log(temp_detail)
               if(data_detail['status']) continue start_position;
               console.log(data_detail['details']['tags'])
+              if (typeof data_detail['details']['tags'] === 'undefined') continue start_position;
               if(!data_detail['details']['tags'].toString().toLowerCase().includes(tagArg)) continue start_position;
               break;
             }
