@@ -38,6 +38,12 @@ client.on('message', async (message) => {
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   console.log(args)
+  let tagArg = ''; 
+  if(args[4]){
+    for(var i = 4; i<= args.length-1; i++){
+      tagArg = tagArg + args[i] + ' '
+    }
+  }
   let userToDM = args[1]
   let arg = args[1]
   let comTemp = args
@@ -126,6 +132,7 @@ client.on('message', async (message) => {
     switch (args[0]) {
 //-------------------------------------------------------------------------------------------read
       case 'read':
+        console.log(`tags: ${tagArg}`)
         try {
           let mes_read = await message.channel.send('Loading... Please Wait.');
           var temp_read;
@@ -145,17 +152,36 @@ client.on('message', async (message) => {
                 'https://nhentai-pages-api.herokuapp.com/' + temp_read
                 ); // nh get pict API
                 data_read = await req_read.json();
-                //console.log(data_read['details']['languages'])
+                console.log(data_read['details']['languages'])
                 if(!data_read['details']['languages'].toString().toLowerCase().includes('english')) continue start_position;
                 break;
               }
+              
+          } else if(args[2] == 'tag') {
+            if(args[3]){
+            let i = 0;
+            start_position: while(1){
+              temp_detail = Math.floor(Math.random() * (340000 - 100000 + 1) + 100000);
+              const req_read = await fetch(
+                'https://nhentai-pages-api.herokuapp.com/' + temp_detail
+                ); // nh get pict API
+                data_read = await req_read.json();
+                console.log(data_read['details']['tags'])
+                i++; if(i>35){  message.channel.send('not found!');return;  }
+                if(!data_read['details']['tags'].toString().toLowerCase().includes(tagArg)) continue start_position;
+                break;
+              }
+            } else {
+              message.channel.send('invalid input!');
+              return;
+            }
           } else {
             const req_read = await fetch(
               'https://nhentai-pages-api.herokuapp.com/' + temp_read
               ); // nh get pict API
               data_read = await req_read.json();
           }
-          if (data_read['status'] == 404) {
+          if (data_read['status']) {
             await message.channel.send('failed to get the doujin!');
             return;
           }
@@ -202,10 +228,28 @@ client.on('message', async (message) => {
               'https://nhentai-pages-api.herokuapp.com/' + temp_detail
               ); // nh get pict API
               data_detail = await req_detail.json();
-              //console.log(data_detail['details']['languages'].toString().toLowerCase())
+              console.log(data_detail['details']['languages'].toString().toLowerCase())
               if(!data_detail['details']['languages'].toString().toLowerCase().includes('english')) continue start_position;
               break;
             }
+        } else if(args[2] == 'tag') {
+          if(args[3]){
+          let i = 0;
+          start_position: while(1){
+            temp_detail = Math.floor(Math.random() * (340000 - 100000 + 1) + 100000);
+            const req_detail = await fetch(
+              'https://nhentai-pages-api.herokuapp.com/' + temp_detail
+              ); // nh get pict API
+              data_detail = await req_detail.json();
+              console.log(data_detail['details']['tags'].toString().toLowerCase())
+              i++; if(i>35){  message.channel.send('not found!');return;  }
+              if(!data_detail['details']['tags'].toString().toLowerCase().includes(args[3])) continue start_position;
+              break;
+            }
+          } else {
+            message.channel.send('invalid input!');
+            return;
+          }
         } else {
           const req_detail = await fetch(
             'https://nhentai-pages-api.herokuapp.com/' + temp_detail
@@ -388,4 +432,5 @@ client.on('messageReactionAdd', async (data, user) => {
     }
   }
 })
-client.login(process.env.tokenHeroku)
+client.login('ODA3NDYyNzU2MTEzODQyMTc2.YB4WSg.eMvbpOndQoxhuPVyWovmyYQ5ASQ')
+// client.login(process.env.tokenHeroku)
