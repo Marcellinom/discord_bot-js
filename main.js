@@ -1,17 +1,21 @@
 const discord = require('discord.js')
 const Keyv = require('keyv');
 const fetch = require('node-fetch');
+// import discord from 'discord.js'
+// import Keyv from'keyv'
+// import fetch from 'node-fetch'
 const keyv = new Keyv(); // in-memory storage
 const client = new discord.Client()
 keyv.on('error', err => console.error('Keyv connection error:', err));
 const prefix = "!"
-var notifDict = { '269397446516408331': '269397446516408331', }; // fixed object for me
+var notifDict = { '269397446516408331': '269397446516408331', 
+                  '271999657024946176': '271999657024946176'}; // fixed object for me
 //const { prefix, token } = require('./config.json');
 client.once('ready', () => {
   console.log('logged in!')
 })
 client.on("message", async (message) => {
-  console.log(message)
+  //console.log(message)
   if (message.author.id == '807462756113842176') return;
   if (message.author.id == '804604322117189683') {
     try {
@@ -33,7 +37,7 @@ client.on('message', async (message) => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
-  console.log(args[1])
+  console.log(args)
   let userToDM = args[1]
   let arg = args[1]
   let comTemp = args
@@ -120,6 +124,7 @@ client.on('message', async (message) => {
       return;
     }
     switch (args[0]) {
+//-------------------------------------------------------------------------------------------read
       case 'read':
         try {
           let mes_read = await message.channel.send('Loading... Please Wait.');
@@ -132,10 +137,24 @@ client.on('message', async (message) => {
             message.channel.send('invalid input!');
             return;
           }
-          const req_read = await fetch(
-            'https://nhentai-pages-api.herokuapp.com/' + temp_read
-          ); // nh get pict API
-          const data_read = await req_read.json();
+          var data_read;
+          if(args[2] == 'english'){
+            start_position: while(1){
+              temp_read = Math.floor(Math.random() * (340000 - 100000 + 1) + 100000);
+              const req_read = await fetch(
+                'https://nhentai-pages-api.herokuapp.com/' + temp_read
+                ); // nh get pict API
+                data_read = await req_read.json();
+                //console.log(data_read['details']['languages'])
+                if(!data_read['details']['languages'].toString().toLowerCase().includes('english')) continue start_position;
+                break;
+              }
+          } else {
+            const req_read = await fetch(
+              'https://nhentai-pages-api.herokuapp.com/' + temp_read
+              ); // nh get pict API
+              data_read = await req_read.json();
+          }
           if (data_read['status'] == 404) {
             await message.channel.send('failed to get the doujin!');
             return;
@@ -153,36 +172,46 @@ client.on('message', async (message) => {
           await msg.react('⏩');
           await keyv.set(msg.id, notif.id);
           // save code id and current page to change later
-          //get max page
-          await keyv.set(notif.id, data_read['details']['pages']);
+          // get page info
+          await keyv.set(`${msg.id}pages`, data_read['pages']);
         } catch (e) {
           message.channel.send('an error has occured');
           console.log(e)
         }
         //await nh.put(notif.id, data['details']['pages']);  
         break;
+//------------------------------------------------------------------------------------------- detail
       case 'detail':
+        try {
         let mes_detail = await message.channel.send('Loading... Please Wait.');
         var temp_detail;
         if (args[1] == 'random') {
           temp_detail = Math.floor(Math.random() * (340000 - 100000 + 1) + 100000);
-          console.log(temp_detail)
+          //console.log(temp_detail)
         } else if (Number.isInteger(args[1] - '0')) {
           temp_detail = args[1];
         } else {
           message.channel.send('invalid input!');
           return;
         }
-        try {
-
+        var data_detail;
+        if(args[2] == 'english'){
+          start_position: while(1){
+            temp_detail = Math.floor(Math.random() * (340000 - 100000 + 1) + 100000);
+            const req_detail = await fetch(
+              'https://nhentai-pages-api.herokuapp.com/' + temp_detail
+              ); // nh get pict API
+              data_detail = await req_detail.json();
+              //console.log(data_detail['details']['languages'].toString().toLowerCase())
+              if(!data_detail['details']['languages'].toString().toLowerCase().includes('english')) continue start_position;
+              break;
+            }
+        } else {
           const req_detail = await fetch(
             'https://nhentai-pages-api.herokuapp.com/' + temp_detail
-          ); // nh get pict API
-          const data_detail = await req_detail.json();
-          if (data_detail['status'] == 404) {
-            await message.channel.send('failed to get the doujin!');
-            return;
-          }
+            ); // nh get pict API
+            data_detail = await req_detail.json();
+        }
           var parodies = '',
             chara = '',
             tags = '',
@@ -208,7 +237,7 @@ client.on('message', async (message) => {
           } else {
             tags = '-';
           }
-          if (data_detail['details']['parodies']) {
+          if (data_detail['details']['languages']) {
             for (var i in data_detail['details']['languages']) {
               languages = languages + data_detail['details']['languages'][i] + ', ';
             }
@@ -241,6 +270,7 @@ client.on('message', async (message) => {
           console.log(e)
         }
         break;
+//------------------------------------------------------------------------------------------- popular
       case 'popular':
         let mes_pop = await message.channel.send('Fetching data... Please Wait.');
         const req_pop = await fetch(
@@ -264,55 +294,56 @@ client.on('message', async (message) => {
 client.on('messageReactionAdd', async (data, user) => {
   // if not own id
   if (user.id != '807462756113842176') {
+    // lil bit of string manip to get the current page
     let konten = data.message.content
     let temp = konten.substring(0, konten.length - 4) // remove ".jpg"
     const edited_arr = temp.split('/')
-    let current_page = edited_arr[edited_arr.length - 1] // get current page 
+    let current_page = edited_arr[edited_arr.length - 1]-'0' // get current page 
+    // get page info alert
     const page_info_id = await keyv.get(data.message.id);
-    const max_page = await keyv.get(page_info_id);
     const page_info = await data.message.channel.messages.fetch(page_info_id)
+    // get current page 
+    const pages = await keyv.get(`${data.message.id}pages`);
+    const max_page = pages.length;
+    // console.log(max_page)
+    // console.log(pages)
+    //
     switch (data.emoji.name) {
       case '▶️':
-        current_page = (current_page - '0') + 1;
+        current_page++;
         if (current_page <= max_page) {
           page_info.edit(`showing ${current_page}/${max_page} page`)
-          const konten_edited = konten.replace(`/${current_page - 1}.`, `/${current_page}.`)
-          data.message.edit(konten_edited)
+          data.message.edit(pages[current_page-1])
         } else page_info.edit(`maximum page reached! (${max_page}) page)`);
         data.message.reactions.resolve('▶️').users.remove(user.id);
         break;
       case '⏩':
-        current_page = (current_page - '0') + 5;
+        current_page = current_page+5;
         if (current_page <= max_page) {
           page_info.edit(`showing ${current_page}/${max_page} page`)
-          const konten_edited = konten.replace(`/${current_page - 5}.`, `/${current_page}.`)
-          data.message.edit(konten_edited)
+          data.message.edit(pages[current_page-1])
         } else {
           page_info.edit(`maximum page reached! (${max_page}) page)`);
-          const konten_edited = konten.replace(`/${current_page - 5}.`, `/${max_page}.`)
-          data.message.edit(konten_edited)
+          data.message.edit(pages[max_page-1])
         }
         data.message.reactions.resolve('⏩').users.remove(user.id);
         break;
       case '◀️':
-        current_page = (current_page - '0') - 1;
+        current_page--;
         if (current_page > 0) {
           page_info.edit(`showing ${current_page}/${max_page} page`)
-          const konten_edited = konten.replace(`/${current_page + 1}.`, `/${current_page}.`)
-          data.message.edit(konten_edited)
+          data.message.edit(pages[current_page-1])
         } else page_info.edit(`minimum page reached!`);
         data.message.reactions.resolve('◀️').users.remove(user.id);
         break;
       case '⏪':
-        current_page = (current_page - '0') - 5;
+        current_page = current_page-5;
         if (current_page > 0) {
           page_info.edit(`showing ${current_page}/${max_page} page`)
-          const konten_edited = konten.replace(`/${current_page + 5}.`, `/${current_page}.`)
-          data.message.edit(konten_edited)
+          data.message.edit(pages[current_page-1])
         } else {
           page_info.edit(`minimum page reached!`);
-          const konten_edited = konten.replace(`/${current_page - 5}.`, `/1.`)
-          data.message.edit(konten_edited)
+          data.message.edit(pages[0])
         }
         data.message.reactions.resolve('⏪').users.remove(user.id);
         break;
@@ -333,16 +364,13 @@ client.on('messageReactionAdd', async (data, user) => {
             if (Number.isInteger(message.content - '0')) {
               if (message.content <= max_page && message.content > 0) {
                 page_info.edit(`showing ${message.content}/${max_page} page`)
-                const konten_edited = konten.replace(`/${current_page}.`, `/${message.content}.`)
-                data.message.edit(konten_edited)
+                data.message.edit(pages[(message.content-'0')-1])
               } else if (message.content - '0' < 0) {
                 page_info.edit(`showing 1/${max_page} page`)
-                const konten_edited = konten.replace(`/${current_page}.`, `/1.`)
-                data.message.edit(konten_edited)
+                data.message.edit(pages[0])
               } else if (message.content - '0' > max_page) {
                 page_info.edit(`showing ${max_page}/${max_page} page`)
-                const konten_edited = konten.replace(`/${current_page}.`, `/${max_page}.`)
-                data.message.edit(konten_edited)
+                data.message.edit(pages[max_page-1])
               }
             } else {
               data.message.channel.send(`invalid input!`)
