@@ -140,6 +140,8 @@ client.on('message', async (message) => {
             temp_read = Math.floor(Math.random() * (340000 - 100000 + 1) + 100000);
           } else if (Number.isInteger(args[1] - '0')) {
             temp_read = args[1];
+          } else if (args[1].includes('https://nhentai.net/g/')){
+            temp_read = args[1].replace('https://nhentai.net/g/','')
           } else {
             message.channel.send('invalid input!');
             return;
@@ -152,7 +154,8 @@ client.on('message', async (message) => {
                 'https://nhentai-pages-api.herokuapp.com/' + temp_read
                 ); // nh get pict API
                 data_read = await req_read.json();
-                console.log(data_read['details']['languages'])
+                if(typeof data_read['details']['languages'] === 'undefined') continue start_position;
+                console.log(data_read['details']['tags'])
                 if(!data_read['details']['languages'].toString().toLowerCase().includes('english')) continue start_position;
                 break;
               }
@@ -161,13 +164,15 @@ client.on('message', async (message) => {
             if(args[3]){
             let i = 0;
             start_position: while(1){
-              temp_detail = Math.floor(Math.random() * (340000 - 100000 + 1) + 100000);
+              temp_read = Math.floor(Math.random() * (340000 - 100000 + 1) + 100000);
               const req_read = await fetch(
-                'https://nhentai-pages-api.herokuapp.com/' + temp_detail
+                'https://nhentai-pages-api.herokuapp.com/' + temp_read
                 ); // nh get pict API
                 data_read = await req_read.json();
-                console.log(data_read['details']['tags'])
                 i++; if(i>35){  message.channel.send('not found!');return;  }
+                console.log(temp_detail)
+                if(typeof data_read['details']['tags'] === 'undefined') continue start_position;
+                console.log(data_read['details']['tags'])
                 if(!data_read['details']['tags'].toString().toLowerCase().includes(tagArg)) continue start_position;
                 break;
               }
@@ -216,6 +221,8 @@ client.on('message', async (message) => {
           //console.log(temp_detail)
         } else if (Number.isInteger(args[1] - '0')) {
           temp_detail = args[1];
+        } else if(args[1].includes('https://nhentai.net/g/')){
+          temp_detail = args[1].replace('https://nhentai.net/g/', '')
         } else {
           message.channel.send('invalid input!');
           return;
@@ -228,7 +235,8 @@ client.on('message', async (message) => {
               'https://nhentai-pages-api.herokuapp.com/' + temp_detail
               ); // nh get pict API
               data_detail = await req_detail.json();
-              console.log(data_detail['details']['languages'].toString().toLowerCase())
+              if(typeof data_detail['details']['languages'] === 'undefined') continue start_position;
+              console.log(data_detail['details']['languages'])
               if(!data_detail['details']['languages'].toString().toLowerCase().includes('english')) continue start_position;
               break;
             }
@@ -241,9 +249,11 @@ client.on('message', async (message) => {
               'https://nhentai-pages-api.herokuapp.com/' + temp_detail
               ); // nh get pict API
               data_detail = await req_detail.json();
-              console.log(data_detail['details']['tags'].toString().toLowerCase())
               i++; if(i>35){  message.channel.send('not found!');return;  }
-              if(!data_detail['details']['tags'].toString().toLowerCase().includes(args[3])) continue start_position;
+              console.log(temp_detail)
+              if(typeof data_detail['details']['tags'] === 'undefined') continue start_position;
+              console.log(data_detail['details']['tags'])
+              if(!data_detail['details']['tags'].toString().toLowerCase().includes(tagArg)) continue start_position;
               break;
             }
           } else {
