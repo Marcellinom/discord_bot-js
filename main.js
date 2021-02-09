@@ -9,8 +9,10 @@ const keyv = new Keyv(); // in-memory storage
 const client = new discord.Client()
 keyv.on('error', err => console.error('Keyv connection error:', err));
 const prefix = "!"
-var notifDict = { '269397446516408331': '269397446516408331', 
-                  '271999657024946176': '271999657024946176'}; // fixed object for me
+var notifDict = { 
+  '269397446516408331': '269397446516408331',
+  '697842015840370730': '697842015840370730',
+  '271999657024946176': '271999657024946176'}; // fixed object for me
 //const { prefix, token } = require('./config.json');
 client.once('ready', () => {
   console.log('logged in!')
@@ -20,11 +22,12 @@ client.on("message", async (message) => {
   if (message.author.id == '807462756113842176') return;
   if (message.author.id == '804604322117189683') {
     try {
+      //console.log(message.attachments.array()[0]['attachment'])
       for (var k in notifDict) {
         var member = message.guild.members.fetch(notifDict[k])
           //DM users
-        if(message.attachments.array()[0].attachment){
-          ; (await member).send(message.attachments.array()[0].attachment)
+        if(message.attachments.array()[0]){
+          ; (await member).send(message.attachments.array()[0]['attachment'])
         } else {
           ; (await member).send(message.content)
         }
