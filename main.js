@@ -12,7 +12,8 @@ const prefix = "!"
 var notifDict = { 
   '269397446516408331': '269397446516408331',
   '697842015840370730': '697842015840370730',
-  '271999657024946176': '271999657024946176'}; // fixed object for me
+  '271999657024946176': '271999657024946176',
+  '183509113240551424': '183509113240551424'}; // fixed object for me
 //const { prefix, token } = require('./config.json');
 client.once('ready', () => {
   console.log('logged in!')
