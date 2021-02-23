@@ -21,7 +21,7 @@ client.on("message", async (message) => {
     if(message.author.id === '269397446516408331'){
       let rep = await message.channel.send("Resetting...");
       client.destroy();
-      client.login('ODEzNzIyNDc0MzIzNTA5MjU5.YDTcHA.0XyGYdQYYzTSOSWJsH3uba4o3Vc');
+      client.login(process.env.tokenHeroku);
       rep.delete()
     }
   }
