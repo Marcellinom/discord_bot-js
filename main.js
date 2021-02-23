@@ -2,6 +2,7 @@ const discord = require('discord.js')
 const { MessageAttachment } = require('discord.js');
 const Keyv = require('keyv');
 const fetch = require('node-fetch');
+const request = require('request');
 // import discord from 'discord.js'
 // import Keyv from'keyv'
 // import fetch from 'node-fetch'
@@ -9,14 +10,21 @@ const keyv = new Keyv(); // in-memory storage
 const client = new discord.Client()
 keyv.on('error', err => console.error('Keyv connection error:', err));
 const prefix = "!"
-var notifDict = { 
-  '269397446516408331': '269397446516408331',
-  '697842015840370730': '697842015840370730',
-  '271999657024946176': '271999657024946176',
-  '183509113240551424': '183509113240551424'}; // fixed object for me
+var notifDict = [
+'269397446516408331']; // fixed object for me
 //const { prefix, token } = require('./config.json');
 client.once('ready', () => {
   console.log('logged in!')
+})
+client.on("message", async (message) => {
+  if(message.content === '!res'){
+    if(message.author.id === '269397446516408331'){
+      let rep = await message.channel.send("Resetting...");
+      client.destroy();
+      client.login('ODEzNzIyNDc0MzIzNTA5MjU5.YDTcHA.0XyGYdQYYzTSOSWJsH3uba4o3Vc');
+      rep.delete()
+    }
+  }
 })
 client.on("message", async (message) => {
   //console.log(message)
@@ -79,7 +87,7 @@ client.on('message', async (message) => {
         }
       }
     } else {
-      message.channel.send(`invalid input!`);
+      message.channel.send('invalid input!')
     }
   } else if (command == 'remove') {
     if (userToDM.startsWith('<@') && userToDM.endsWith('>')) {
@@ -129,6 +137,29 @@ client.on('message', async (message) => {
         message.channel.send("empty")
       }
     }
+  } else if(command.includes('im')) {
+    var search = (args.join(" "));
+    const options = {
+      method: 'GET',
+      url: 'https://bing-image-search1.p.rapidapi.com/images/search',
+      qs: {q: search, count: '30'},
+      headers: {
+        'x-rapidapi-key': process.env.rapidapiKey,
+        'x-rapidapi-host': process.env.rapidapiHost,
+        useQueryString: true
+      }
+    };
+    var query;
+    request(options, async function (error, response, body) {
+      if (error) throw new Error(error);
+      const res = JSON.parse(body) 
+      query = res.value;
+      let msg = message.channel.send(query[0]['contentUrl']);
+      await keyv.set(msg.id, res.value);
+      // let key = await keyv.get(msg.id);
+      // message.channel.send(key);
+    });
+
   } else if (command == 'nh') {
     if (!message.channel.nsfw) {
       message.channel.send('this isn\'t an NSFW channel dummy :3');
