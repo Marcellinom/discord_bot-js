@@ -154,11 +154,7 @@ client.on('message', async (message) => {
       if (error) throw new Error(error);
       const res = JSON.parse(body) 
       query = res.value;
-      var i = 0;
-      while(query[i]['contentUrl'].includes('https://lookaside')){
-        i++;
-      }
-      let msg = message.channel.send(query[i]['contentUrl']);
+      let msg = message.channel.send(query[0]['thumbnailUrl']);
       await keyv.set(msg.id, res.value);
       // let key = await keyv.get(msg.id);
       // message.channel.send(key);
