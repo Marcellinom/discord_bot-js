@@ -137,7 +137,7 @@ client.on('message', async (message) => {
         message.channel.send("empty")
       }
     }
-  } else if(command.includes('qw')) {
+  } else if(command.includes('im')) {
     var search = (args.join(" "));
     const options = {
       method: 'GET',
@@ -159,7 +159,7 @@ client.on('message', async (message) => {
       var pageinfo = await message.channel.send(`showing 1/${res.value.length} images`); 
       var msg = await message.channel.send(query[ind]['thumbnailUrl']);
  
-      let filter = m => m.content === "n" || m.content === "p"
+      let filter = m => m.channel.id === message.channel.id 
               // awaiting input reply
       var flag = true;
         while(flag){
@@ -177,6 +177,7 @@ client.on('message', async (message) => {
                     msg.edit(query[ind]['thumbnailUrl'])
                     .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
                     .catch(console.error);
+                    message.delete();
                   } else if(message.content === 'p' && ind-1>=0){
                     ind--;
                     console.log(ind);
@@ -184,14 +185,16 @@ client.on('message', async (message) => {
                     msg.edit(query[ind]['thumbnailUrl'])
                     .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
                     .catch(console.error);
+                    message.delete();
+                  } else {
+                    flag = false
                   }
-                  message.delete();
                 })
                 .catch(collected => {
                   flag = false
                   message.channel.send('Timeout!')
                   .then(mes => {
-                    mes.delete({ timeout: 5000 });
+                    mes.delete({ timeout: 3000 });
                   }).catch(console.log)
                 })
               }
