@@ -137,7 +137,7 @@ client.on('message', async (message) => {
         message.channel.send("empty")
       }
     }
-  } else if(command.includes('qw')) {
+  } else if(command.includes('im')) {
     var search = (args.join(" "));
     const options = {
       method: 'GET',
