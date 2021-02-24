@@ -193,7 +193,7 @@ client.on('message', async (message) => {
                   } else {
                     flag = false
                   }
-                })
+                }).catch(console.log)
               }
     });
 
