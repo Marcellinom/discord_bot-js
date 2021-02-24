@@ -170,21 +170,25 @@ client.on('message', async (message) => {
               })
                 .then(message => {
                   message = message.first() 
-                  if (message.content === 'n' && ind+1<=res.value.length) {
+                  if (message.content === 'n') {
                     ind++;
-                    console.log(ind);
-                    pageinfo.edit(`showing ${ind+1}/${res.value.length} images`);
-                    msg.edit(query[ind]['thumbnailUrl'])
-                    .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
-                    .catch(console.error);
+                    if(ind<=res.value.length){
+                      console.log(ind);
+                      pageinfo.edit(`showing ${ind+1}/${res.value.length} images`);
+                      msg.edit(query[ind]['thumbnailUrl'])
+                      .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
+                      .catch(console.error);
+                    }
                     message.delete();
-                  } else if(message.content === 'p' && ind-1>=0){
+                  } else if(message.content === 'p'){
                     ind--;
-                    console.log(ind);
-                    pageinfo.edit(`showing ${ind+1}/${res.value.length} images`);
-                    msg.edit(query[ind]['thumbnailUrl'])
-                    .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
-                    .catch(console.error);
+                    if(ind-1>=0){
+                      console.log(ind);
+                      pageinfo.edit(`showing ${ind+1}/${res.value.length} images`);
+                      msg.edit(query[ind]['thumbnailUrl'])
+                      .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
+                      .catch(console.error);
+                    }
                     message.delete();
                   } else {
                     flag = false
