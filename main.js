@@ -193,7 +193,9 @@ client.on('message', async (message) => {
                   } else {
                     flag = false
                   }
-                }).catch(console.log)
+                }).catch(collection => {
+              console.log('timeout')  
+              })
               }
     });
 
