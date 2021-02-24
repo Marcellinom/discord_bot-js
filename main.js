@@ -165,7 +165,7 @@ client.on('message', async (message) => {
         while(flag){
               await message.channel.awaitMessages(filter, {
                 max: 1,
-                time: 10000,
+                time: 100000,
                 errors: ['time']
               })
                 .then(message => {
@@ -189,13 +189,6 @@ client.on('message', async (message) => {
                   } else {
                     flag = false
                   }
-                })
-                .catch(collected => {
-                  flag = false
-                  message.channel.send('Timeout!')
-                  .then(mes => {
-                    mes.delete({ timeout: 3000 });
-                  }).catch(console.log)
                 })
               }
     });
