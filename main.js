@@ -137,7 +137,7 @@ client.on('message', async (message) => {
         message.channel.send("empty")
       }
     }
-  } else if(command.includes('im')) {
+  } else if(command.includes('qw')) {
     var search = (args.join(" "));
     const options = {
       method: 'GET',
@@ -149,15 +149,52 @@ client.on('message', async (message) => {
         useQueryString: true
       }
     };
-    var query;
+
     request(options, async function (error, response, body) {
       if (error) throw new Error(error);
       const res = JSON.parse(body) 
-      query = res.value;
-      let msg = message.channel.send(query[0]['thumbnailUrl']);
-      await keyv.set(msg.id, res.value);
-      // let key = await keyv.get(msg.id);
-      // message.channel.send(key);
+      var query = res.value;
+      console.log(res.value.length);
+      var ind = 0;
+      var pageinfo = await message.channel.send(`showing 1/${res.value.length} images`); 
+      var msg = await message.channel.send(query[ind]['thumbnailUrl']);
+ 
+      let filter = m => m.content === "n" || m.content === "p"
+              // awaiting input reply
+      var flag = true;
+        while(flag){
+              await message.channel.awaitMessages(filter, {
+                max: 1,
+                time: 10000,
+                errors: ['time']
+              })
+                .then(message => {
+                  message = message.first() 
+                  if (message.content === 'n' && ind+1<=res.value.length) {
+                    ind++;
+                    console.log(ind);
+                    pageinfo.edit(`showing ${ind+1}/${res.value.length} images`);
+                    msg.edit(query[ind]['thumbnailUrl'])
+                    .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
+                    .catch(console.error);
+                  } else if(message.content === 'p' && ind-1>=0){
+                    ind--;
+                    console.log(ind);
+                    pageinfo.edit(`showing ${ind+1}/${res.value.length} images`);
+                    msg.edit(query[ind]['thumbnailUrl'])
+                    .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
+                    .catch(console.error);
+                  }
+                  message.delete();
+                })
+                .catch(collected => {
+                  flag = false
+                  message.channel.send('Timeout!')
+                  .then(mes => {
+                    mes.delete({ timeout: 5000 });
+                  }).catch(console.log)
+                })
+              }
     });
 
   } else if (command == 'nh') {
