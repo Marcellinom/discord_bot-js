@@ -190,10 +190,12 @@ client.on('message', async (message) => {
                       .catch(console.error);
                     }
                     message.delete();
-                  } else {
+                  } else if(message.content.includes('!im')) {
+                    console.log('stopped')  
                     flag = false
                   }
                 }).catch(collection => {
+              flag = false
               console.log('timeout')  
               })
               }
