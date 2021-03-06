@@ -92,8 +92,8 @@ client.on('message', async (message) => {
                 .then(message => {
                   message = message.first() 
                   if (message.content === 'n') {
-                    ind++;
-                    if(ind<=res.value.length){
+                    if(ind+1<=res.value.length){
+                      ind++;
                       console.log(ind);
                       pageinfo.edit(`showing ${ind+1}/${res.value.length} images`);
                       msg.edit(query[ind]['thumbnailUrl'])
@@ -102,8 +102,8 @@ client.on('message', async (message) => {
                     }
                     message.delete();
                   } else if(message.content === 'p'){
-                    ind--;
                     if(ind-1>=0){
+                      ind--;
                       console.log(ind);
                       pageinfo.edit(`showing ${ind+1}/${res.value.length} images`);
                       msg.edit(query[ind]['thumbnailUrl'])
@@ -111,10 +111,14 @@ client.on('message', async (message) => {
                       .catch(console.error);
                     }
                     message.delete();
-                  } else {
+                  } else if(message.content.includes('!im')) {
+                    console.log('stopped')  
                     flag = false
                   }
-                })
+                }).catch(collection => {
+              flag = false
+              console.log('timeout')  
+              })
               }
     });
 
