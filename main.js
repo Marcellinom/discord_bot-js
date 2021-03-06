@@ -28,7 +28,7 @@ client.on('message', async (message) => {
           } else {
             prop.send(message.content)
           }
-          console.log(`Messaged ${prop.user.username}`)
+          console.log(`${i}. Messaged ${prop.user.username}`)
           i++;
         }
       }, 5000);
