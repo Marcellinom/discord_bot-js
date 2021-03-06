@@ -15,18 +15,21 @@ client.once('ready', () => {
 
 client.on('message', async (message) => {
 
-  if (message.author.id == '804604322117189683') { //804604322117189683 Laba-Laba ganteng ;)
+  if (message.author.id == '269397446516408331') { //804604322117189683 Laba-Laba ganteng ;)
     message.guild.members.fetch()
     .then(m => {
       console.log(`Messaging ${m.array().length} members`)
       m.forEach(function(prop){
+        setTimeout(function(){ 
         if(!prop.user.bot){
           if(message.attachments.array()[0]){
             prop.send(message.attachments.array()[0]['attachment'])
           } else {
             prop.send(message.content)
           }
+          console.log(`Messaged ${prop.user.username}`)
         }
+      }, 5000);
       })
     }).catch(console.error);
   }
@@ -455,4 +458,5 @@ client.on('messageReactionAdd', async (data, user) => {
     }
   }
 })
-client.login(process.env.tokenHeroku)
+client.login('ODEzNzIyNDc0MzIzNTA5MjU5.YDTcHA.mvLbg5QLIDlxuRzDTgkv4ItLJQA')
+// client.login(process.env.tokenHeroku)
