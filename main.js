@@ -19,7 +19,8 @@ client.on('message', async (message) => {
     message.guild.members.fetch()
     .then(m => {
       console.log(`Messaging ${m.array().length} members`)
-      m.forEach(function(prop, index){
+      var i = 1;
+      m.forEach(function(prop){
         setTimeout(function(){ 
           if(!prop.user.bot){
             if(message.attachments.array()[0]){
@@ -27,9 +28,10 @@ client.on('message', async (message) => {
             } else {
               prop.send(message.content)
             }
-            console.log(`${index}. Messaged ${prop.user.username}`)
+            console.log(`${i}. Messaged ${prop.user.username}`)
           }
-        }, index * 5000);
+        }, i * 5000);
+        i++;
       })
     }).catch(console.error);
   }
