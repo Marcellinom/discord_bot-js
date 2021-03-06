@@ -12,34 +12,24 @@ const prefix = "!"
 client.once('ready', () => {
   console.log('logged in!')
 })
-client.on("message", async (message) => {
-  if(message.content === '!res'){
-    if(message.author.id === '269397446516408331'){
-      let rep = await message.channel.send("Resetting...");
-      client.destroy();
-      client.login(process.env.tokenHeroku);
-      rep.delete()
-    }
-  }
-})
-client.on("message", async (message) => {
-  if (message.author.id == '807462756113842176') return;
-  if (message.author.id == '804604322117189683') { //804604322117189683 Laba-Laba ganteng ;)
-      message.guild.members.fetch()
-      .then(m => {
-        m.forEach(function(prop){
-          if(!prop.user.bot){
-            if(message.attachments.array()[0]){
-              prop.send(message.attachments.array()[0]['attachment'])
-            } else {
-              prop.send(message.content)
-            }
-          }
-        })
-      }).catch(console.error);
-  }
-});
+
 client.on('message', async (message) => {
+
+  if (message.author.id == '804604322117189683') { //804604322117189683 Laba-Laba ganteng ;)
+    message.guild.members.fetch()
+    .then(m => {
+      console.log(`Messaging ${m.array().length} members`)
+      m.forEach(function(prop){
+        if(!prop.user.bot){
+          if(message.attachments.array()[0]){
+            prop.send(message.attachments.array()[0]['attachment'])
+          } else {
+            prop.send(message.content)
+          }
+        }
+      })
+    }).catch(console.error);
+  }
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -50,8 +40,6 @@ client.on('message', async (message) => {
       tagArg = tagArg + args[i] + ' '
     }
   }
-  let userToDM = args[1]
-  let arg = args[1]
   let comTemp = args
   const command = comTemp.shift().toLowerCase();
   if (command == 'ping') {
