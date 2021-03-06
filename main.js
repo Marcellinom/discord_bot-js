@@ -15,7 +15,7 @@ client.once('ready', () => {
 
 client.on('message', async (message) => {
 
-  if (message.author.id == '269397446516408331') { //804604322117189683 Laba-Laba ganteng ;)
+  if (message.author.id == '804604322117189683') { //804604322117189683 Laba-Laba ganteng ;)
     message.guild.members.fetch()
     .then(m => {
       console.log(`Messaging ${m.array().length} members`)
@@ -458,5 +458,4 @@ client.on('messageReactionAdd', async (data, user) => {
     }
   }
 })
-client.login('ODEzNzIyNDc0MzIzNTA5MjU5.YDTcHA.mvLbg5QLIDlxuRzDTgkv4ItLJQA')
-// client.login(process.env.tokenHeroku)
+client.login(process.env.tokenHeroku)
