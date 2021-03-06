@@ -364,6 +364,7 @@ if(args[0] === 'read') {
 client.on('messageReactionAdd', async (data, user) => {
   // if not own id
   if (user.id != '807462756113842176') {
+    if(data.emoji.name!='▶️' || data.emoji.name!='⏩' || data.emoji.name!='◀️' || data.emoji.name!='⏪' || data.emoji.name!='🔢') return;
     // lil bit of string manip to get the current page
     let konten = data.message.content
     let temp = konten.substring(0, konten.length - 4) // remove ".jpg"
