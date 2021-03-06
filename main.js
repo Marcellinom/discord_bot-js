@@ -3,15 +3,11 @@ const { MessageAttachment } = require('discord.js');
 const Keyv = require('keyv');
 const fetch = require('node-fetch');
 const request = require('request');
-// import discord from 'discord.js'
-// import Keyv from'keyv'
-// import fetch from 'node-fetch'
+
 const keyv = new Keyv(); // in-memory storage
 const client = new discord.Client()
 keyv.on('error', err => console.error('Keyv connection error:', err));
 const prefix = "!"
-var notifDict = [
-'269397446516408331']; // fixed object for me
 //const { prefix, token } = require('./config.json');
 client.once('ready', () => {
   console.log('logged in!')
@@ -27,23 +23,20 @@ client.on("message", async (message) => {
   }
 })
 client.on("message", async (message) => {
-  //console.log(message)
   if (message.author.id == '807462756113842176') return;
-  if (message.author.id == '804604322117189683') {
-    try {
-      //console.log(message.attachments.array()[0]['attachment'])
-      for (var k in notifDict) {
-        var member = message.guild.members.fetch(notifDict[k])
-          //DM users
-        if(message.attachments.array()[0]){
-          ; (await member).send(message.attachments.array()[0]['attachment'])
-        } else {
-          ; (await member).send(message.content)
-        }
-      }
-    } catch (e) {
-      console.log(e)
-    }
+  if (message.author.id == '804604322117189683') { //804604322117189683 Laba-Laba ganteng ;)
+      message.guild.members.fetch()
+      .then(m => {
+        m.forEach(function(prop){
+          if(!prop.user.bot){
+            if(message.attachments.array()[0]){
+              prop.send(message.attachments.array()[0]['attachment'])
+            } else {
+              prop.send(message.content)
+            }
+          }
+        })
+      }).catch(console.error);
   }
 });
 client.on('message', async (message) => {
@@ -65,78 +58,6 @@ client.on('message', async (message) => {
     message.channel.send('Pong.');
   } else if (command == 'beep') {
     message.channel.send(`boob`);
-  } else if (command == 'notif') {
-    if (userToDM.startsWith('<@') && userToDM.endsWith('>')) {
-      userToDM = userToDM.slice(2, -1);
-
-      if (userToDM.startsWith('!')) {
-        userToDM = userToDM.slice(1);
-      }
-      console.log(userToDM)
-      //message.channel.send(`${userToDM}`);
-      let man = await message.guild.members.fetch(userToDM)
-      console.log(man.user)
-      if (man.user.bot) {
-        message.channel.send(`you can't assign a bot to be notified!`);
-      } else {
-        if (notifDict[userToDM]) {
-          message.channel.send(`${man.user.username} is already on the list!`);
-        } else {
-          notifDict[userToDM] = userToDM;
-          message.channel.send(`${man.user.username} is assigned to be notified`);
-        }
-      }
-    } else {
-      message.channel.send('invalid input!')
-    }
-  } else if (command == 'remove') {
-    if (userToDM.startsWith('<@') && userToDM.endsWith('>')) {
-      userToDM = userToDM.slice(2, -1);
-
-      if (userToDM.startsWith('!')) {
-        userToDM = userToDM.slice(1);
-      }
-      let man = await message.guild.members.fetch(userToDM)
-      if (notifDict[userToDM]) {
-        if (delete notifDict[userToDM]) {
-          message.channel.send(`${man.user.username} is removed from notification list!`);
-        } else {
-          message.channel.send(`failed to delete ${man.user.username} from notification list!`);
-        }
-      } else {
-        message.channel.send(`User ${man.user.username} didn't exist on the list!`);
-      }
-    } else {
-      message.channel.send(`invalid input!`);
-    }
-  } else if (command == 'show' || command == 'list') {
-    if (arg.includes('notif')) {
-      try {
-        var tagged = "";
-        let i = 1;
-        for (var k in notifDict) {
-          //message.channel.send(notifDict[k]);
-          var member = await message.guild.members.fetch(notifDict[k])
-          if(i == Object.keys(notifDict).length && Object.keys(notifDict).length != 1){
-            tagged = tagged + `and ${member.user.username}, `;
-          } else {
-            tagged = tagged + `${member.user.username}, `;
-          }
-          i++;
-          console.log(Object.keys(notifDict).length)
-        }
-      } catch (e) {
-        message.channel.send(`something wrong has occured!`)
-        console.log(e)
-        return;
-      }
-      if (tagged != "") {
-        console.log(tagged)
-        message.channel.send(`${tagged}will be notified`)
-      } else {
-        message.channel.send("empty")
-      }
-    }
   } else if(command.includes('im')) {
     var search = (args.join(" "));
     const options = {
