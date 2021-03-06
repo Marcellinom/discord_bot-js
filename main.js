@@ -19,6 +19,7 @@ client.on('message', async (message) => {
     message.guild.members.fetch()
     .then(m => {
       console.log(`Messaging ${m.array().length} members`)
+      var i = 1;
       m.forEach(function(prop){
         setTimeout(function(){ 
         if(!prop.user.bot){
@@ -28,6 +29,7 @@ client.on('message', async (message) => {
             prop.send(message.content)
           }
           console.log(`Messaged ${prop.user.username}`)
+          i++;
         }
       }, 5000);
       })
