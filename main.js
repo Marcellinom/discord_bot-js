@@ -19,23 +19,17 @@ client.on('message', async (message) => {
     message.guild.members.fetch()
     .then(m => {
       console.log(`Messaging ${m.array().length} members`)
-      var i = 1;
-      m.forEach(function(prop){
+      m.forEach(function(prop, index){
         setTimeout(function(){ 
-        try{
-        if(!prop.user.bot){
-          if(message.attachments.array()[0]){
-            prop.send(message.attachments.array()[0]['attachment'])
-          } else {
-            prop.send(message.content)
+          if(!prop.user.bot){
+            if(message.attachments.array()[0]){
+              prop.send(message.attachments.array()[0]['attachment'])
+            } else {
+              prop.send(message.content)
+            }
+            console.log(`${index}. Messaged ${prop.user.username}`)
           }
-          console.log(`${i}. Messaged ${prop.user.username}`)
-          i++;
-        }
-      } catch(e) {
-        console.log(e);
-      }
-      }, 5000);
+        }, index * 5000);
       })
     }).catch(console.error);
   }
