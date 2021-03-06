@@ -22,6 +22,7 @@ client.on('message', async (message) => {
       var i = 1;
       m.forEach(function(prop){
         setTimeout(function(){ 
+        try{
         if(!prop.user.bot){
           if(message.attachments.array()[0]){
             prop.send(message.attachments.array()[0]['attachment'])
@@ -31,6 +32,9 @@ client.on('message', async (message) => {
           console.log(`${i}. Messaged ${prop.user.username}`)
           i++;
         }
+      } catch(e) {
+        console.log(e);
+      }
       }, 5000);
       })
     }).catch(console.error);
