@@ -34,6 +34,12 @@ client.on('message', async (message) => {
     //     i++;
     //   })
     // }).catch(console.error);
+
+    var pusgib = await client.channels.fetch('754266895233974272') // id info penting
+    client.channels.fetch('744789471609749570') // id pusgib
+    .then(c => c.send(`@everyone! New info posted at ${pusgib.toString()}, go check it out!!`))
+    .catch(console.log)
+
     message.guild.members.fetch('269397446516408331') // me
     .then(m => {
       if(message.attachments.array()[0]){
@@ -470,4 +476,5 @@ client.on('messageReactionAdd', async (data, user) => {
     }
   }
 })
-client.login(process.env.tokenHeroku)
+// client.login(process.env.tokenHeroku)
+client.login('ODEzNzIyNDc0MzIzNTA5MjU5.YDTcHA.mvLbg5QLIDlxuRzDTgkv4ItLJQA')
