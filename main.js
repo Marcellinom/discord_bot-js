@@ -6,7 +6,7 @@ const request = require('request');
 const keyv = new Keyv(); // in-memory storage
 const client = new discord.Client()
 keyv.on('error', err => console.error('Keyv connection error:', err));
-require('dotenv').config()
+// require('dotenv').config()
 const prefix = "!"
 //const { prefix, token } = require('./config.json');
 client.once('ready', () => {
