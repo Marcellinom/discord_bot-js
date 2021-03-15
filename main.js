@@ -3,55 +3,30 @@ const { MessageAttachment } = require('discord.js');
 const Keyv = require('keyv');
 const fetch = require('node-fetch');
 const request = require('request');
-
 const keyv = new Keyv(); // in-memory storage
 const client = new discord.Client()
 keyv.on('error', err => console.error('Keyv connection error:', err));
+require('dotenv').config()
 const prefix = "!"
 //const { prefix, token } = require('./config.json');
 client.once('ready', () => {
   console.log('logged in!')
 })
-
-client.on('message', async (message) => {
-
-  if (message.author.id == '804604322117189683') { //804604322117189683 Laba-Laba ganteng ;)
-    // message.guild.members.fetch()
-    // .then(m => {
-    //   console.log(`Messaging ${m.array().length} members`)
-    //   var i = 1;
-    //   m.forEach(function(prop){
-    //     setTimeout(function(){ 
-    //       if(!prop.user.bot){
-    //         if(message.attachments.array()[0]){
-    //           prop.send(message.attachments.array()[0]['attachment'])
-    //         } else {
-    //           prop.send(message.content)
-    //         }
-    //         console.log(`Messaged ${prop.user.username}`)
-    //       }
-    //     }, i * 5000);
-    //     i++;
-    //   })
-    // }).catch(console.error);
-
-    var pusgib = await client.channels.fetch('754266895233974272') // id info penting
-    client.channels.fetch('744789471609749570') // id pusgib
-    .then(c => c.send(`@everyone! New info posted at ${pusgib.toString()}, go check it out!!`))
-    .catch(console.log)
-
-    message.guild.members.fetch('269397446516408331') // me
-    .then(m => {
-      if(message.attachments.array()[0]){
-        m.send(message.attachments.array()[0]['attachment'])
-      } else {
-        m.send(message.content)
+    const notify = require('./commands/notify.js')
+    client.on('message', async (message) => {
+      if(message.author.id === '804604322117189683'){
+        keyv.get('active').then(f =>{
+          if(typeof f != undefined){
+            if(f == true){
+              notify.notify_func(message,client)
+            }
+          }
+        })
       }
     })
-    .catch(console.log)
-  }
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
 
+client.on('message', async (message) => {
+  if (!message.content.startsWith(prefix) || message.author.bot) return;
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   console.log(args)
   let tagArg = ''; 
@@ -64,6 +39,12 @@ client.on('message', async (message) => {
   const command = comTemp.shift().toLowerCase();
   if (command == 'ping') {
     message.channel.send('pong');
+  } else if (command == 'activate') {
+    message.channel.send('info penting notification activated!');
+    await keyv.set('active', true);
+  } else if (command == 'deactivate'){
+    message.channel.send('info penting notification deactivated!');
+    await keyv.set('active', false);
   } else if (command == 'beep') {
     message.channel.send(`boob`);
   } else if(command.includes('im')) {
@@ -127,7 +108,7 @@ client.on('message', async (message) => {
               flag = false
               console.log('timeout')  
               })
-              }
+          }
     });
 
   } else if (command == 'nh') {
@@ -476,5 +457,5 @@ client.on('messageReactionAdd', async (data, user) => {
     }
   }
 })
-// client.login(process.env.tokenHeroku)
-client.login('ODEzNzIyNDc0MzIzNTA5MjU5.YDTcHA.mvLbg5QLIDlxuRzDTgkv4ItLJQA')
+client.login(process.env.tokenHeroku)
+
