@@ -16,24 +16,33 @@ client.once('ready', () => {
 client.on('message', async (message) => {
 
   if (message.author.id == '804604322117189683') { //804604322117189683 Laba-Laba ganteng ;)
-    message.guild.members.fetch()
+    // message.guild.members.fetch()
+    // .then(m => {
+    //   console.log(`Messaging ${m.array().length} members`)
+    //   var i = 1;
+    //   m.forEach(function(prop){
+    //     setTimeout(function(){ 
+    //       if(!prop.user.bot){
+    //         if(message.attachments.array()[0]){
+    //           prop.send(message.attachments.array()[0]['attachment'])
+    //         } else {
+    //           prop.send(message.content)
+    //         }
+    //         console.log(`Messaged ${prop.user.username}`)
+    //       }
+    //     }, i * 5000);
+    //     i++;
+    //   })
+    // }).catch(console.error);
+    message.guild.members.fetch('269397446516408331') // me
     .then(m => {
-      console.log(`Messaging ${m.array().length} members`)
-      var i = 1;
-      m.forEach(function(prop){
-        setTimeout(function(){ 
-          if(!prop.user.bot){
-            if(message.attachments.array()[0]){
-              prop.send(message.attachments.array()[0]['attachment'])
-            } else {
-              prop.send(message.content)
-            }
-            console.log(`Messaged ${prop.user.username}`)
-          }
-        }, i * 5000);
-        i++;
-      })
-    }).catch(console.error);
+      if(message.attachments.array()[0]){
+        m.send(message.attachments.array()[0]['attachment'])
+      } else {
+        m.send(message.content)
+      }
+    })
+    .catch(console.log)
   }
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
@@ -48,7 +57,7 @@ client.on('message', async (message) => {
   let comTemp = args
   const command = comTemp.shift().toLowerCase();
   if (command == 'ping') {
-    message.channel.send('Pong.');
+    message.channel.send('pong');
   } else if (command == 'beep') {
     message.channel.send(`boob`);
   } else if(command.includes('im')) {
