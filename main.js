@@ -6,7 +6,7 @@ const request = require('request');
 const keyv = new Keyv(); // in-memory storage
 const client = new discord.Client()
 keyv.on('error', err => console.error('Keyv connection error:', err));
-require('dotenv').config()
+// require('dotenv').config()
 const prefix = "!"
 //const { prefix, token } = require('./config.json');
 client.once('ready', () => {
@@ -43,7 +43,7 @@ client.on('message', async (message) => {
     message.channel.send('info penting notification activated!');
     await keyv.set('active', true);
   } else if (command == 'deactivate'){
-    message.channel.send('info penting notification deactivated!');
+    message.channel.send('info penting notification activated!');
     await keyv.set('active', false);
   } else if (command == 'beep') {
     message.channel.send(`boob`);
