@@ -4,7 +4,7 @@ const Keyv = require('keyv');
 const keyv = new Keyv();
 module.exports = {
     notify_func: async function(message,client){
-        if (message.author.bot) return;
+        console.log('info going on')
         var infopen = await client.channels.fetch('754266895233974272')
         var filter = m => m.author.id === '804604322117189683';
         const collector = message.channel.createMessageCollector(filter, { time: 1000 * 30 });
@@ -19,8 +19,8 @@ module.exports = {
                         console.log(f)
                         if(f){
                             console.log(`Collected ${collected.size} items`);
-                            client.channels.fetch('744789471609749570')
-                            .then(c => c.send(`@everyone! ada ${collected.size+1} info baru di ${infopen.toString()} lho! ayo cek!`))
+                            client.channels.fetch('744789471609749570') // pusgib
+                            .then(c => c.send(`@everyone! ada ${collected.size+1} info baru di ${infopen.toString()} loh! ayo segera di cek!`))
                             .then(keyv.set('active', false))
                         }
                     })

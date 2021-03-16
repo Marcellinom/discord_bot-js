@@ -6,7 +6,7 @@ const request = require('request');
 const keyv = new Keyv(); // in-memory storage
 const client = new discord.Client()
 keyv.on('error', err => console.error('Keyv connection error:', err));
-// require('dotenv').config()
+require('dotenv').config()
 const prefix = "!"
 //const { prefix, token } = require('./config.json');
 client.once('ready', () => {
@@ -16,11 +16,9 @@ client.once('ready', () => {
     client.on('message', async (message) => {
       if(message.author.id === '804604322117189683'){
         keyv.get('active').then(f =>{
-          if(typeof f != undefined){
-            if(f == true){
+            if(f === true){
               notify.notify_func(message,client)
             }
-          }
         })
       }
     })
@@ -45,6 +43,8 @@ client.on('message', async (message) => {
   } else if (command == 'deactivate'){
     message.channel.send('info penting notification activated!');
     await keyv.set('active', false);
+  } else if(command == 'getstat'){
+    message.channel.send(typeof await keyv.get('active'))
   } else if (command == 'beep') {
     message.channel.send(`boob`);
   } else if(command.includes('im')) {
