@@ -10,12 +10,13 @@ module.exports = {
         const collector = message.channel.createMessageCollector(filter, { time: 1000 * 30 });
             collector.on('collect', m => {
                 keyv.set('active', true)
-                .then(console.log)
+                .then(console.log('collect on success'))
             });
             collector.on('end', collected => {
                 try{
                     keyv.get('active')
                     .then(f => {
+                        console.log('collect on end')
                         console.log(f)
                         if(f){
                             console.log(`Collected ${collected.size} items`);
