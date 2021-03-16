@@ -44,7 +44,11 @@ client.on('message', async (message) => {
     message.channel.send('info penting notification activated!');
     await keyv.set('active', false);
   } else if(command == 'getstat'){
-    message.channel.send(typeof await keyv.get('active'))
+    if(typeof await keyv.get('active') != 'undefined'){
+      message.channel.send(await keyv.get('active'))
+    } else {
+      message.channel.send('null')
+    }
   } else if (command == 'beep') {
     message.channel.send(`boob`);
   } else if(command.includes('im')) {
