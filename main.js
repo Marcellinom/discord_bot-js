@@ -17,9 +17,9 @@ var active = false
     const rem = require('./commands/removebg.js')
     
     client.on('message', async (message)=> {
-      if(message.content.startsWith(prefix)){
+      if(message.content.startsWith(prefix) && !message.author.bot){
         if(message.content.includes('r') && message.content.includes('bg')){
-          rem.remove_bg(message)
+          rem.remove_bg(message,client)
         }
       }
     })
