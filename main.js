@@ -14,13 +14,21 @@ client.once('ready', () => {
 })
 var active = false
     const notify = require('./commands/notify.js')
+    const rem = require('./commands/removebg.js')
+    
+    client.on('message', async (message)=> {
+      if(message.content.startsWith(prefix)){
+        if(message.content.includes('r') && message.content.includes('bg')){
+          rem.remove_bg(message)
+        }
+      }
+    })
+
     client.on('message', async (message) => {
       if(message.author.id === '804604322117189683'){ // me 269397446516408331 || laba2 804604322117189683
-        // keyv.get('active').then(f =>{
             if(active){
               notify.notify_func(message,client)
             }
-        // })
       }
     })
 
@@ -40,18 +48,12 @@ client.on('message', async (message) => {
     message.channel.send('pong');
   } else if (command == 'activate') {
     message.channel.send('info penting notification activated!');
-    // await keyv.set('active', true);
     active = true
   } else if (command == 'deactivate'){
-    message.channel.send('info penting notification activated!');
-    // await keyv.set('active', false);
+    message.channel.send('info penting notification deactivated!');
     active = false
   } else if(command == 'getstat'){
-    if(typeof await keyv.get('active') != 'undefined'){
-      message.channel.send(await keyv.get('active'))
-    } else {
-      message.channel.send('null')
-    }
+    message.channel.send(active)
   } else if (command == 'beep') {
     message.channel.send(`boob`);
   } else if(command.includes('im')) {
