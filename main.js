@@ -369,6 +369,7 @@ if(args[0] === 'read') {
 });
 
 client.on('messageReactionAdd', async (data, user) => {
+  keyv.get(data.message.id).then(d => { if(typeof d != 'undefined') console.log(d) })
   // if not own id
   if (user.id != '820912531374997536') {
     if(data.emoji.name!='▶️' || data.emoji.name!='⏩' || data.emoji.name!='◀️' || data.emoji.name!='⏪' || data.emoji.name!='🔢') return;
