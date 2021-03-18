@@ -8,7 +8,7 @@ module.exports = {
         var infopen = await client.channels.fetch('754266895233974272') // tester 808409160471019531 || infopen 754266895233974272
         var filter = m => m.author.id === '804604322117189683'; // me 269397446516408331 || Laba2 804604322117189683
         active = false
-        const collector = message.channel.createMessageCollector(filter, { time: 1000 * 30 });
+        const collector = message.channel.createMessageCollector(filter, { time: 1000 * 45 });
             collector.on('collect', m => {
                 console.log('collect on success')
             });
@@ -21,7 +21,7 @@ module.exports = {
                         if(!active){
                             console.log(`Collected ${collected.size} items`);
                             client.channels.fetch('744789471609749570') // general 810347347237273631 || pusgib 744789471609749570
-                            .then(c => c.send(`@everyone! ada ${collected.size+1} info baru di ${infopen.toString()} loh! ayo segera di cek!`))
+                            .then(c => c.send(`@Mahasiswa! ada ${collected.size+1} info baru di ${infopen.toString()} loh! ayo segera di cek!`))
                             .then(active = true)
                         }
                     // })
