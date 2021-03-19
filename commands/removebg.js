@@ -4,7 +4,8 @@ var request = require('request');
 var fs = require('fs');
 module.exports = {
     remove_bg: async function(mes,client) {
-        if (mes.embeds[0] || mes.content.includes('.png') || mes.content.includes('.jpg') || mes.content.includes('.jpeg')) {
+
+        if (mes.embeds[0] || mes.content.includes('.png') || mes.content.includes('.jpg') || mes.content.includes('.jpeg') || mes.content.includes('mm.bing.net')) {
             if(!mes.embeds[0]) {
                 let temp = mes.content.split(' ')
                 var img = temp[temp.length-1]
