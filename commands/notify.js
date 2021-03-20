@@ -21,7 +21,7 @@ module.exports = {
                         if(!active){
                             console.log(`Collected ${collected.size} items`);
                             client.channels.fetch('744789471609749570') // general 810347347237273631 || pusgib 744789471609749570
-                            .then(c => c.send(`@Mahasiswa! ada ${collected.size+1} info baru di ${infopen.toString()} loh! ayo segera di cek!`))
+                            .then(c => c.send(`<@&744847472148349001>! ada ${collected.size+1} info baru di ${infopen.toString()} loh! ayo segera di cek!`))
                             .then(active = true)
                         }
                     // })

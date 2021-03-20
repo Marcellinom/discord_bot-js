@@ -16,19 +16,19 @@ var active = true
     const notify = require('./commands/notify.js')
     const rem = require('./commands/removebg.js')
     
-    client.on('message', async (message)=> {
-      if(message.content.startsWith(prefix) && !message.author.bot){
-        if(message.content.includes('r') && message.content.includes('bg')){
-          rem.remove_bg(message,client)
-        }
-      }
-    })
-
     client.on('message', async (message) => {
       if(message.author.id === '804604322117189683'){ // me 269397446516408331 || laba2 804604322117189683
             if(active){
               notify.notify_func(message,client)
             }
+      }
+    })
+    
+    client.on('message', async (message)=> {
+      if(message.content.startsWith(prefix) && !message.author.bot){
+        if(message.content.includes('r') && message.content.includes('bg')){
+          rem.remove_bg(message,client)
+        }
       }
     })
 
@@ -54,6 +54,7 @@ var active = true
     })
     
 const imgsr = require('./commands/imgsrc.js')
+
 client.on('message', async (message) => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
   const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -78,7 +79,7 @@ client.on('message', async (message) => {
     message.channel.send(active)
   } else if (command == 'beep') {
     message.channel.send(`boob`);
-  } else if(command.includes('tes')) { // change
+  } else if(command.includes('im')) { // change
     imgsr.imgSearch(message, args);
   } else if (command == 'nh') {
     if (!message.channel.nsfw) {
