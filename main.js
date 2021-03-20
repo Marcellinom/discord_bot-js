@@ -16,19 +16,19 @@ var active = true
     const notify = require('./commands/notify.js')
     const rem = require('./commands/removebg.js')
     
-    client.on('message', async (message)=> {
-      if(message.content.startsWith(prefix) && !message.author.bot){
-        if(message.content.includes('r') && message.content.includes('bg')){
-          rem.remove_bg(message,client)
-        }
-      }
-    })
-
     client.on('message', async (message) => {
       if(message.author.id === '804604322117189683'){ // me 269397446516408331 || laba2 804604322117189683
             if(active){
               notify.notify_func(message,client)
             }
+      }
+    })
+
+    client.on('message', async (message)=> {
+      if(message.content.startsWith(prefix) && !message.author.bot){
+        if(message.content.includes('r') && message.content.includes('bg')){
+          rem.remove_bg(message,client)
+        }
       }
     })
 
