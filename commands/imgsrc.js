@@ -40,7 +40,8 @@ module.exports = {
                     errors: ['time']
                   })
                     .then(message => {
-                      message = message.first() 
+                      message = message.first();
+                      var edit = true;
                       if (message.content === 'n') {
                         if(ind+1<=res.value.length){
                           ind++;
@@ -88,11 +89,16 @@ module.exports = {
                       } else if(message.content.includes('!im')) {
                         console.log('stopped')  
                         flag = false
+                          edit = false;
+                      } else {
+                        edit = false;
                       }
-                      embedMessage.edit(newEmbed)
-                      .then(console.log(`Msg Updated to page ${ind+1}`))
-                      .then(message.delete())
-                      .catch(console.error);
+                      if(edit){
+                          embedMessage.edit(newEmbed)
+                          .then(console.log(`Msg Updated to page ${ind+1}`))
+                          .then(message.delete())
+                          .catch(console.error);
+                      }
                     }).catch(collection => {
                   flag = false
                   console.log('timeout')  
