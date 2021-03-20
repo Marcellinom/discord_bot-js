@@ -61,7 +61,7 @@ module.exports = {
                           .setImage(query[ind]['thumbnailUrl'])
                           .setFooter('type "n" for next query, "p" for previous query \ntype the number you desired to jump pages');
                         }
-                      } else if(!isNaN(Number(message.content))) {
+                      } else if(!isNaN(message.content-'0')) {
                         var jump = parseInt(message.content)
                         if(jump>res.value.length) {
                           ind = res.value.length-1;
