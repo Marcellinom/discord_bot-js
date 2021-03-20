@@ -5,9 +5,9 @@ const fetch = require('node-fetch');
 const request = require('request');
 const keyv = new Keyv(); // in-memory storage
 const client = new discord.Client()
+const prefix = "!"
 keyv.on('error', err => console.error('Keyv connection error:', err));
 require('dotenv').config()
-const prefix = "!"
 //const { prefix, token } = require('./config.json');
 client.once('ready', () => {
   console.log('logged in!')
@@ -32,6 +32,28 @@ var active = true
       }
     })
 
+    client.on('message', async(mes)=>{
+      if(mes.content.startsWith(prefix) && mes.content.includes('bgstat')){
+        request.get({
+          url: 'https://api.remove.bg/v1.0/account',
+          headers: {
+            'X-Api-Key': process.env.tokenRemovebg
+          },
+        }, function(error, response, body) {
+          if(error) return console.error(error)
+          if(response.statusCode != 200) return console.error('Error:', response.statusCode, body.toString('utf8'));
+          const info = JSON.parse(body).data.attributes.api.free_calls;
+          console.log(info);
+          if (info <= 10) {
+            mes.channel.send(`kamu hanya bisa remove bg ${info} kali lagi!`);
+          } else {
+            mes.channel.send(`kamu masih bisa remove bg ${info} kali lagi!`);
+          }
+        })
+      }
+    })
+    
+const imgsr = require('./commands/imgsrc.js')
 client.on('message', async (message) => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
   const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -56,70 +78,8 @@ client.on('message', async (message) => {
     message.channel.send(active)
   } else if (command == 'beep') {
     message.channel.send(`boob`);
-  } else if(command.includes('im')) {
-    var search = (args.join(" "));
-    const options = {
-      method: 'GET',
-      url: 'https://bing-image-search1.p.rapidapi.com/images/search',
-      qs: {q: search, count: '30'},
-      headers: {
-        'x-rapidapi-key': process.env.rapidapiKey,
-        'x-rapidapi-host': process.env.rapidapiHost,
-        useQueryString: true
-      }
-    };
-
-    request(options, async function (error, response, body) {
-      if (error) throw new Error(error);
-      const res = JSON.parse(body) 
-      var query = res.value;
-      console.log(res.value.length);
-      var ind = 0;
-      var pageinfo = await message.channel.send(`showing 1/${res.value.length} images`); 
-      var msg = await message.channel.send(query[ind]['thumbnailUrl']);
- 
-      let filter = m => m.channel.id === message.channel.id 
-              // awaiting input reply
-      var flag = true;
-        while(flag){
-              await message.channel.awaitMessages(filter, {
-                max: 1,
-                time: 100000,
-                errors: ['time']
-              })
-                .then(message => {
-                  message = message.first() 
-                  if (message.content === 'n') {
-                    if(ind+1<=res.value.length){
-                      ind++;
-                      console.log(ind);
-                      pageinfo.edit(`showing ${ind+1}/${res.value.length} images`);
-                      msg.edit(query[ind]['thumbnailUrl'])
-                      .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
-                      .catch(console.error);
-                    }
-                    message.delete();
-                  } else if(message.content === 'p'){
-                    if(ind-1>=0){
-                      ind--;
-                      console.log(ind);
-                      pageinfo.edit(`showing ${ind+1}/${res.value.length} images`);
-                      msg.edit(query[ind]['thumbnailUrl'])
-                      .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
-                      .catch(console.error);
-                    }
-                    message.delete();
-                  } else if(message.content.includes('!im')) {
-                    console.log('stopped')  
-                    flag = false
-                  }
-                }).catch(collection => {
-              flag = false
-              console.log('timeout')  
-              })
-          }
-    });
-
+  } else if(command.includes('tes')) { // change
+    imgsr.imgSearch(message, args);
   } else if (command == 'nh') {
     if (!message.channel.nsfw) {
       message.channel.send('this isn\'t an NSFW channel dummy :3');
