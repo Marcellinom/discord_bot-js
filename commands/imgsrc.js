@@ -30,7 +30,7 @@ module.exports = {
           (await ms).delete();
           var embedMessage = await message.channel.send(embed);
      
-          let filter = m => m.channel.id === message.channel.id 
+          let filter = m => m.channel.id === message.channel.id || m.content === 'n' || m.content === 'p' || m.content-'0' != NaN
           // awaiting input reply
           var flag = true;
             while(flag){
@@ -61,7 +61,8 @@ module.exports = {
                           .setImage(query[ind]['thumbnailUrl'])
                           .setFooter('type "n" for next query, "p" for previous query \ntype the number you desired to jump pages');
                         }
-                      } else if(!isNaN(message.content-'0')) {
+                      } else if((Number.isInteger(message.content-'0'))) {
+                        console.log('custom');
                         var jump = parseInt(message.content)
                         if(jump>res.value.length) {
                           ind = res.value.length-1;

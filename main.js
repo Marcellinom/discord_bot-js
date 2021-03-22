@@ -18,9 +18,9 @@ var active = true
     
     client.on('message', async (message) => {
       if(message.author.id === '804604322117189683'){ // me 269397446516408331 || laba2 804604322117189683
-            if(active){
-              notify.notify_func(message,client)
-            }
+        if(active){
+          notify.notify_func(message,client)
+        }
       }
     })
     
@@ -68,6 +68,7 @@ client.on('message', async (message) => {
   let comTemp = args
   const command = comTemp.shift().toLowerCase();
   if (command == 'ping') {
+    console.log(args[0]-'0');
     message.channel.send('pong');
   } else if (command == 'activate') {
     message.channel.send('info penting notification activated!');
@@ -79,9 +80,10 @@ client.on('message', async (message) => {
     message.channel.send(active)
   } else if (command == 'beep') {
     message.channel.send(`boob`);
-  } else if(command.includes('im')) { // change
+  } else if(command.includes('tes')) { // change
+    console.log(args[0])
     imgsr.imgSearch(message, args);
-  } else if (command == 'nh') {
+  } else if (command == 'n') {
     if (!message.channel.nsfw) {
       message.channel.send('this isn\'t an NSFW channel dummy :3');
       return;
@@ -148,21 +150,28 @@ if(args[0] === 'read') {
             await message.channel.send('failed to get the doujin!');
             return;
           }
-          let notif = await message.channel.send(
-            `showing 1/${data_read['details']['pages']} page`
-          );
-          let msg = await message.channel.send(data_read['pages'][0]);
+          const nhembed = new discord.MessageEmbed()
+          .setColor('#0099ff')
+          .setTitle(data_read.title)
+          .setURL(`https://nhentai.net/g/${temp_read}`)
+          .setDescription(`showing 1/${data_read['details']['pages']} page`)
+          .setImage(data_read['pages'][0]);
           mes_read.delete();
           //console.log(msg);
-          await msg.react('⏪');
-          await msg.react('◀️');
-          await msg.react('🔢');
-          await msg.react('▶️');
-          await msg.react('⏩');
-          await keyv.set(msg.id, notif.id);
+          const m = await message.channel.send(nhembed)
+          await keyv.set(`${m.id}maxpage`, data_read['details']['pages']-'0');
+          await keyv.set(`${m.id}url`, `https://nhentai.net/g/${temp_read}`);
+          await keyv.set(`${m.id}title`, data_read.title);
+          await keyv.set(m.id, data_read['pages']);
+          await keyv.set(`${m.id}page`, 1);
+          await m.react('⏪');
+          await m.react('◀️');
+          await m.react('🔢');
+          await m.react('▶️');
+          await m.react('⏩');
           // save code id and current page to change later
           // get page info
-          await keyv.set(`${msg.id}pages`, data_read['pages']);
+         // await keyv.set(`${msg.id}pages`, data_read['pages']);
         } catch (e) {
           message.channel.send('an error has occured');
           console.log(e)
@@ -330,72 +339,56 @@ if(args[0] === 'read') {
 });
 
 client.on('messageReactionAdd', async (data, user) => {
-  keyv.get(data.message.id).then(d => { if(typeof d != 'undefined') console.log(d) })
+  // keyv.get(data.message.id).then(d => { if(typeof d != 'undefined') console.log(d) })
   // if not own id
-  if (user.id != '820912531374997536') {
+  if (user.id != '820912531374997536' && user.id != '821068310476488766') {
     if(data.emoji.name!='▶️' && data.emoji.name!='⏩' && data.emoji.name!='◀️' && data.emoji.name!='⏪' && data.emoji.name!='🔢') return;
     console.log(data.emoji.name)
-    keyv.get(data.message.id).then(d => { if(typeof d != 'undefined') console.log(d) })
-    keyv.get(`${data.message.id}pages`).then(d => { if(typeof d != 'undefined') console.log(`${d} pages`) })
-    // lil bit of string manip to get the current page
-    let konten = data.message.content
-    let temp = konten.substring(0, konten.length - 4) // remove ".jpg"
-    const edited_arr = temp.split('/')
-    let current_page = edited_arr[edited_arr.length - 1]-'0' // get current page 
-    // get page info alert
-    const page_info_id = await keyv.get(data.message.id);
-    const page_info = await data.message.channel.messages.fetch(page_info_id)
-    // get current page 
-    const pages = await keyv.get(`${data.message.id}pages`);
-    const max_page = pages.length;
-    // console.log(max_page)
-    // console.log(pages)
-    //
+    // get title
+    var title = await keyv.get(`${data.message.id}title`);
+
+    // get link
+    var url = await keyv.get(`${data.message.id}url`);
+
+    // get pages data 
+    var pages = await keyv.get(data.message.id);
+    //console.log(pages);
+    
+    // get curr page
+    var current_page = await keyv.get(`${data.message.id}page`);
+
+    // get max apge
+    var max_page = await keyv.get(`${data.message.id}maxpage`);
+    console.log(`max page: ${max_page}`);
+    const nembed = new discord.MessageEmbed();
     switch (data.emoji.name) {
       case '▶️':
-        current_page++;
-        if (current_page <= max_page) {
-          page_info.edit(`showing ${current_page}/${max_page} page`)
-          data.message.edit(pages[current_page-1])
-        } else page_info.edit(`maximum page reached! (${max_page}) page)`);
+        if (current_page+1 <= max_page) current_page++;
+        else                            current_page = max_page;
         data.message.reactions.resolve('▶️').users.remove(user.id);
         break;
+
       case '⏩':
-        current_page = current_page+5;
-        if (current_page <= max_page) {
-          page_info.edit(`showing ${current_page}/${max_page} page`)
-          data.message.edit(pages[current_page-1])
-        } else {
-          page_info.edit(`maximum page reached! (${max_page}) page)`);
-          data.message.edit(pages[max_page-1])
-        }
+        if (current_page+5 <= max_page) current_page += 5;
+        else                            current_page = max_page;
         data.message.reactions.resolve('⏩').users.remove(user.id);
         break;
+
       case '◀️':
-        current_page--;
-        if (current_page > 0) {
-          page_info.edit(`showing ${current_page}/${max_page} page`)
-          data.message.edit(pages[current_page-1])
-        } else page_info.edit(`minimum page reached!`);
+        if (current_page-1 > 0) current_page--;
+        else                    current_page = 1;
         data.message.reactions.resolve('◀️').users.remove(user.id);
         break;
+
       case '⏪':
-        current_page = current_page-5;
-        if (current_page > 0) {
-          page_info.edit(`showing ${current_page}/${max_page} page`)
-          data.message.edit(pages[current_page-1])
-        } else {
-          page_info.edit(`minimum page reached!`);
-          data.message.edit(pages[0])
-        }
+        if (current_page-5 > 0) current_page -= 5;
+        else                    current_page = 0;
         data.message.reactions.resolve('⏪').users.remove(user.id);
         break;
+
       case '🔢':
-        let filter = m => m.author.id === user.id
-        data.message.channel.send(`input the desired page!`)
-          .then(mes => {
-            mes.delete({ timeout: 4000 });
-          }).catch(console.log)
+        let filter = m => m.author.id === user.id;
+        data.message.channel.send(`input the desired page!`).then(m => m.delete({timeout: 5*1000}))
         // awaiting input reply
         data.message.channel.awaitMessages(filter, {
           max: 1,
@@ -403,22 +396,21 @@ client.on('messageReactionAdd', async (data, user) => {
           errors: ['time']
         })
           .then(message => {
-            message = message.first()
-            if (Number.isInteger(message.content - '0')) {
-              if (message.content <= max_page && message.content > 0) {
-                page_info.edit(`showing ${message.content}/${max_page} page`)
-                data.message.edit(pages[(message.content-'0')-1])
-              } else if (message.content - '0' < 0) {
-                page_info.edit(`showing 1/${max_page} page`)
-                data.message.edit(pages[0])
-              } else if (message.content - '0' > max_page) {
-                page_info.edit(`showing ${max_page}/${max_page} page`)
-                data.message.edit(pages[max_page-1])
-              }
-            } else {
-              data.message.channel.send(`invalid input!`)
-            }
+            message = message.first();
+            if ((Number.isInteger(message.content-'0'))) {
+              if (message.content-'0' <= max_page && message.content-'0' > 0) current_page = message.content - '0';
+              else if (message.content - '0' < 0)                             current_page = 0; 
+              else if (message.content - '0' > max_page)                      current_page = max_page; 
+            } else data.message.channel.send(`invalid input!`) 
             message.delete();
+            keyv.set(`${data.message.id}page`, current_page);
+            keyv.set(`${data.message.id}maxpage`, max_page);
+            nembed.setColor('#0099ff');
+            nembed.setTitle(title);
+            nembed.setURL(url);
+            nembed.setDescription(`showing ${current_page}/${max_page} page`);
+            nembed.setImage(pages[current_page-1]);
+            data.message.edit(nembed);
           })
           .catch(collected => {
             data.message.channel.send('Timeout!')
@@ -429,6 +421,17 @@ client.on('messageReactionAdd', async (data, user) => {
           data.message.reactions.resolve('🔢').users.remove(user.id);
         break;
     }
+    if(data.emoji.name != '🔢'){
+    await keyv.set(`${data.message.id}page`, current_page);
+    await keyv.set(`${data.message.id}maxpage`, max_page);
+    nembed.setColor('#0099ff');
+    nembed.setTitle(title);
+    nembed.setURL(url);
+    nembed.setDescription(`showing ${current_page}/${max_page} page`);
+    nembed.setImage(pages[current_page-1]);
+    data.message.edit(nembed);
+    }
+    console.log(`current page: ${current_page}`)
   }
 })
 client.login(process.env.tokenHeroku)
