@@ -83,7 +83,7 @@ client.on('message', async (message) => {
   } else if(command.includes('tes')) { // change
     console.log(args[0])
     imgsr.imgSearch(message, args);
-  } else if (command == 'n') {
+  } else if (command == 'nh') {
     if (!message.channel.nsfw) {
       message.channel.send('this isn\'t an NSFW channel dummy :3');
       return;
