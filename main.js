@@ -80,9 +80,8 @@ client.on('message', async (message) => {
     message.channel.send(active)
   } else if (command == 'beep') {
     message.channel.send(`boob`);
-  } else if(command.includes('tes')) { // change
-    console.log(args[0])
-    imgsr.imgSearch(message, args);
+  } else if(command.includes('im')) { // change
+    if(typeof(args[0]) != 'undefined') imgsr.imgSearch(message, args);
   } else if (command == 'nh') {
     if (!message.channel.nsfw) {
       message.channel.send('this isn\'t an NSFW channel dummy :3');
