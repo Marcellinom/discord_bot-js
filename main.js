@@ -340,7 +340,7 @@ if(args[0] === 'read') {
 client.on('messageReactionAdd', async (data, user) => {
   // keyv.get(data.message.id).then(d => { if(typeof d != 'undefined') console.log(d) })
   // if not own id
-  if (user.id != '820912531374997536' && user.id != '821068310476488766') {
+  if (!user.bot) {
     if(data.emoji.name!='▶️' && data.emoji.name!='⏩' && data.emoji.name!='◀️' && data.emoji.name!='⏪' && data.emoji.name!='🔢') return;
     console.log(data.emoji.name)
     // get title
