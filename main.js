@@ -25,7 +25,7 @@ var active = true;
     })
 
     client.on('message', async (message) => {
-      if (message.channel.id != '838057852030550037') return;
+      if (message.channel.id != '838057852030550037' || message.author.id != '270148059269300224') return;
       if(message.content.startsWith(prefix) && !message.author.bot){
         if(message.content.includes('start') && message.content.includes('count')){
           message.channel.send('1');
