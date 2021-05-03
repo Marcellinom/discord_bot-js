@@ -25,12 +25,12 @@ var active = true;
     })
 
     client.on('message', async (message) => {
-      if (message.channel.id != '838057852030550037' || message.author.id != '270148059269300224') return;
-      if(message.content.startsWith(prefix) && !message.author.bot){
+      if (message.channel.id != '838057852030550037') return;
+      if(message.content.startsWith(prefix) && message.author.id === '269397446516408331'){
         if(message.content.includes('start') && message.content.includes('count')){
           message.channel.send('1');
         }
-      } else if(message.author.id !== '820912531374997536') { // me 269397446516408331 || laba2 804604322117189683
+      } else if(message.author.id === '270148059269300224') { // me 269397446516408331 || laba2 804604322117189683
         var num = Number(message.content);
         if (!isNaN(num)) {
           if (num + 1 <= 100) {
