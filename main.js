@@ -12,10 +12,10 @@ require('dotenv').config()
 client.once('ready', () => {
   console.log('logged in!')
 })
-var active = true
+var active = true;
     const notify = require('./commands/notify.js')
     const rem = require('./commands/removebg.js')
-    
+  
     client.on('message', async (message) => {
       if(message.author.id === '804604322117189683'){ // me 269397446516408331 || laba2 804604322117189683
         if(active){
@@ -23,7 +23,23 @@ var active = true
         }
       }
     })
-    
+
+    client.on('message', async (message) => {
+      if (message.channel.id != '838057852030550037') return;
+      if(message.content.startsWith(prefix) && !message.author.bot){
+        if(message.content.includes('start') && message.content.includes('count')){
+          message.channel.send('1');
+        }
+      } else if(message.author.id !== '820912531374997536') { // me 269397446516408331 || laba2 804604322117189683
+        var num = Number(message.content);
+        if (!isNaN(num)) {
+          if (num + 1 <= 100) {
+            message.channel.send((num + 1).toLocaleString());
+          }
+        }
+      }
+    })
+
     client.on('message', async (message)=> {
       if(message.content.startsWith(prefix) && !message.author.bot){
         if(message.content.includes('r') && message.content.includes('bg')){
@@ -52,8 +68,9 @@ var active = true
         })
       }
     })
-    
+  
 const imgsr = require('./commands/imgsrc.js')
+const trollge = require('./commands/sam.js')
 
 client.on('message', async (message) => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
@@ -67,23 +84,41 @@ client.on('message', async (message) => {
   }
   let comTemp = args
   const command = comTemp.shift().toLowerCase();
-  if (command == 'ping') {
+  if (command == 'ping') 
+  {
     console.log(args[0]-'0');
     message.channel.send('pong');
-  } else if (command == 'activate') {
+  } 
+  else if (command == 'activate') 
+  {
     message.channel.send('info penting notification activated!');
     active = true
-  } else if (command == 'deactivate'){
+  } 
+  else if (command == 'deactivate')
+  {
     message.channel.send('info penting notification deactivated!');
     active = false
-  } else if(command == 'getstat'){
+  } 
+  else if(command == 'getstat')
+  {
     message.channel.send(active)
-  } else if (command == 'beep') {
+  } 
+  else if (command == 'beep') 
+  {
     message.channel.send(`boob`);
-  } else if(command.includes('im')) { // change
+  } 
+  else if(command == 'trollge')
+  {
+      trollge.sam_speak(message,client);
+  } 
+    else if(command.includes('im')) 
+  { // change
     if(typeof(args[0]) != 'undefined') imgsr.imgSearch(message, args);
-  } else if (command == 'nh') {
-    if (!message.channel.nsfw) {
+  } 
+  else if (command == 'nh') 
+  {
+    if (!message.channel.nsfw) 
+    {
       message.channel.send('this isn\'t an NSFW channel dummy :3');
       return;
     }

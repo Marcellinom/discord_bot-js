@@ -5,6 +5,7 @@ const keyv = new Keyv();
 module.exports = {
     notify_func: async function(message,client){
         console.log('info going on')
+    /*
         var infopen = await client.channels.fetch('754266895233974272') // tester 808409160471019531 || infopen 754266895233974272
         var filter = m => m.author.id === '804604322117189683'; // me 269397446516408331 || Laba2 804604322117189683
         active = false
@@ -29,6 +30,7 @@ module.exports = {
                     console.log(e)
                 }
             })
+    */
             message.guild.members.fetch('269397446516408331') // me
             .then(m => {
               if(message.attachments.array()[0]){
