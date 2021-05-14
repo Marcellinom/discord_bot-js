@@ -25,7 +25,7 @@ var active = true;
     })
 
     client.on('message', async (message) => {
-      if (message.channel.id != '838057852030550037') return;
+      if (message.channel.id != '838057852030550037' || message.author.id != '270148059269300224') return;
       if(message.content.startsWith(prefix) && !message.author.bot){
         if(message.content.includes('start') && message.content.includes('count')){
           message.channel.send('1');
@@ -377,96 +377,101 @@ client.on('messageReactionAdd', async (data, user) => {
   // if not own id
   if (!user.bot) {
     if(data.emoji.name!='▶️' && data.emoji.name!='⏩' && data.emoji.name!='◀️' && data.emoji.name!='⏪' && data.emoji.name!='🔢') return;
-    console.log(data.emoji.name)
-    // get title
-    var title = await keyv.get(`${data.message.id}title`);
+    try {
+      console.log(data.emoji.name)
+      // get title
+      var title = await keyv.get(`${data.message.id}title`);
 
-    // get link
-    var url = await keyv.get(`${data.message.id}url`);
+      // get link
+      var url = await keyv.get(`${data.message.id}url`);
 
-    // get pages data 
-    var pages = await keyv.get(data.message.id);
-    //console.log(pages);
-    
-    // get curr page
-    var current_page = await keyv.get(`${data.message.id}page`);
+      // get pages data 
+      var pages = await keyv.get(data.message.id);
+      //console.log(pages);
+      
+      // get curr page
+      var current_page = await keyv.get(`${data.message.id}page`);
 
-    // get max apge
-    var max_page = await keyv.get(`${data.message.id}maxpage`);
-    console.log(`max page: ${max_page}`);
-    const nembed = new discord.MessageEmbed();
-    switch (data.emoji.name) {
-      case '▶️':
-        if (current_page+1 <= max_page) current_page++;
-        else                            current_page = max_page;
-        data.message.reactions.resolve('▶️').users.remove(user.id);
-        break;
+      // get max apge
+      var max_page = await keyv.get(`${data.message.id}maxpage`);
+      console.log(`max page: ${max_page}`);
+      const nembed = new discord.MessageEmbed();
+      switch (data.emoji.name) {
+        case '▶️':
+          if (current_page+1 <= max_page) current_page++;
+          else                            current_page = max_page;
+          data.message.reactions.resolve('▶️').users.remove(user.id);
+          break;
 
-      case '⏩':
-        if (current_page+5 <= max_page) current_page += 5;
-        else                            current_page = max_page;
-        data.message.reactions.resolve('⏩').users.remove(user.id);
-        break;
+        case '⏩':
+          if (current_page+5 <= max_page) current_page += 5;
+          else                            current_page = max_page;
+          data.message.reactions.resolve('⏩').users.remove(user.id);
+          break;
 
-      case '◀️':
-        if (current_page-1 > 0) current_page--;
-        else                    current_page = 1;
-        data.message.reactions.resolve('◀️').users.remove(user.id);
-        break;
+        case '◀️':
+          if (current_page-1 > 0) current_page--;
+          else                    current_page = 1;
+          data.message.reactions.resolve('◀️').users.remove(user.id);
+          break;
 
-      case '⏪':
-        if (current_page-5 > 0) current_page -= 5;
-        else                    current_page = 0;
-        data.message.reactions.resolve('⏪').users.remove(user.id);
-        break;
+        case '⏪':
+          if (current_page-5 > 0) current_page -= 5;
+          else                    current_page = 0;
+          data.message.reactions.resolve('⏪').users.remove(user.id);
+          break;
 
-      case '🔢':
-        let filter = m => m.author.id === user.id;
-        data.message.channel.send(`input the desired page!`).then(m => m.delete({timeout: 5*1000}))
-        // awaiting input reply
-        data.message.channel.awaitMessages(filter, {
-          max: 1,
-          time: 10000,
-          errors: ['time']
-        })
-          .then(message => {
-            message = message.first();
-            if ((Number.isInteger(message.content-'0'))) {
-              if (message.content-'0' <= max_page && message.content-'0' > 0) current_page = message.content - '0';
-              else if (message.content - '0' < 0)                             current_page = 0; 
-              else if (message.content - '0' > max_page)                      current_page = max_page; 
-            } else data.message.channel.send(`invalid input!`) 
-            message.delete();
-            keyv.set(`${data.message.id}page`, current_page);
-            keyv.set(`${data.message.id}maxpage`, max_page);
-            nembed.setColor('#0099ff');
-            nembed.setTitle(title);
-            nembed.setURL(url);
-            nembed.setDescription(`showing ${current_page}/${max_page} page`);
-            nembed.setImage(pages[current_page-1]);
-            data.message.edit(nembed);
+        case '🔢':
+          let filter = m => m.author.id === user.id;
+          data.message.channel.send(`input the desired page!`).then(m => m.delete({timeout: 5*1000}))
+          // awaiting input reply
+          data.message.channel.awaitMessages(filter, {
+            max: 1,
+            time: 10000,
+            errors: ['time']
           })
-          .catch(collected => {
-            data.message.channel.send('Timeout!')
-            .then(mes => {
-              mes.delete({ timeout: 5000 });
-            }).catch(console.log)
-          })
-          data.message.reactions.resolve('🔢').users.remove(user.id);
-        break;
+            .then(message => {
+              message = message.first();
+              if ((Number.isInteger(message.content-'0'))) {
+                if (message.content-'0' <= max_page && message.content-'0' > 0) current_page = message.content - '0';
+                else if (message.content - '0' < 0)                             current_page = 0; 
+                else if (message.content - '0' > max_page)                      current_page = max_page; 
+              } else data.message.channel.send(`invalid input!`) 
+              message.delete();
+              keyv.set(`${data.message.id}page`, current_page);
+              keyv.set(`${data.message.id}maxpage`, max_page);
+              nembed.setColor('#0099ff');
+              nembed.setTitle(title);
+              nembed.setURL(url);
+              nembed.setDescription(`showing ${current_page}/${max_page} page`);
+              nembed.setImage(pages[current_page-1]);
+              data.message.edit(nembed);
+            })
+            .catch(collected => {
+              data.message.channel.send('Timeout!')
+              .then(mes => {
+                mes.delete({ timeout: 5000 });
+              }).catch(console.log)
+            })
+            data.message.reactions.resolve('🔢').users.remove(user.id);
+          break;
+      }
+      if(data.emoji.name != '🔢'){
+      await keyv.set(`${data.message.id}page`, current_page);
+      await keyv.set(`${data.message.id}maxpage`, max_page);
+      nembed.setColor('#0099ff');
+      nembed.setTitle(title);
+      nembed.setURL(url);
+      nembed.setDescription(`showing ${current_page}/${max_page} page`);
+      nembed.setImage(pages[current_page-1]);
+      data.message.edit(nembed);
+      }
+      console.log(`current page: ${current_page}`)
+    } catch(e) {
+      data.message.reactions.resolve(data.emoji.name).users.remove(user.id);
     }
-    if(data.emoji.name != '🔢'){
-    await keyv.set(`${data.message.id}page`, current_page);
-    await keyv.set(`${data.message.id}maxpage`, max_page);
-    nembed.setColor('#0099ff');
-    nembed.setTitle(title);
-    nembed.setURL(url);
-    nembed.setDescription(`showing ${current_page}/${max_page} page`);
-    nembed.setImage(pages[current_page-1]);
-    data.message.edit(nembed);
-    }
-    console.log(`current page: ${current_page}`)
   }
+    
 })
 client.login(process.env.tokenHeroku)
 
