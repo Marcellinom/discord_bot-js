@@ -4,6 +4,7 @@ const Keyv = require('keyv');
 const keyv = new Keyv();
 module.exports = {
     notify_func: async function(message,client){
+        if(message.content === '@Mahasiswa') return;
         console.log('info going on')
     /*
         var infopen = await client.channels.fetch('754266895233974272') // tester 808409160471019531 || infopen 754266895233974272
