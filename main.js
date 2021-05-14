@@ -15,6 +15,7 @@ client.once('ready', () => {
 var active = true;
     const notify = require('./commands/notify.js')
     const rem = require('./commands/removebg.js')
+    const liveleak = require('./commands/liveleak.js')
   
     client.on('message', async (message) => {
       if(message.author.id === '804604322117189683'){ // me 269397446516408331 || laba2 804604322117189683
@@ -44,6 +45,14 @@ var active = true;
       if(message.content.startsWith(prefix) && !message.author.bot){
         if(message.content.includes('r') && message.content.includes('bg')){
           rem.remove_bg(message,client)
+        }
+      }
+    })
+
+    client.on('message', async (message)=> {
+      if(message.content.startsWith(prefix) && !message.author.bot){
+        if(message.content.includes('live')){
+          liveleak.lleak(message,client)
         }
       }
     })
@@ -122,7 +131,7 @@ client.on('message', async (message) => {
       message.channel.send('this isn\'t an NSFW channel dummy :3');
       return;
     }
-if(args[0] === 'read') {
+if(args[0].includes('r')) {
 //-------------------------------------------------------------------------------------------read
         console.log(`tags: ${tagArg}`)
         try {
