@@ -43,19 +43,22 @@ var active = true;
 
     client.on('message', async (message)=> {
       if(message.content.startsWith(prefix) && !message.author.bot){
-        if(message.content.includes('r') && message.content.includes('bg')){
-          rem.remove_bg(message,client)
+        const args = message.content.slice(prefix.length).trim().split(/ +/);
+        if(args[0].includes('leak')){
+          liveleak.lleak(message,client)
         }
       }
     })
 
     client.on('message', async (message)=> {
       if(message.content.startsWith(prefix) && !message.author.bot){
-        if(message.content.includes('live')){
-          liveleak.lleak(message,client)
+        const args = message.content.slice(prefix.length).trim().split(/ +/);
+        if(args[0].includes('bg')){
+          rem.remove_bg(message,client)
         }
       }
     })
+
 
     client.on('message', async(mes)=>{
       if(mes.content.startsWith(prefix) && mes.content.includes('bgstat')){

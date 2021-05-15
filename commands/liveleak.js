@@ -46,38 +46,33 @@ module.exports = {
             const dimensions = sizeOf('./plain.png')
             console.log(dimensions.width, dimensions.height)
 
-            var substractor=0;
-            var add=0;
-            if(dimensions.width > dimensions.height || dimensions.width == dimensions.height)
-                substractor=dimensions.height
-            else {
-                substractor=dimensions.width;
-                add=Math.abs(dimensions.width-dimensions.height);
-            }
-            var w = 1083-Math.floor(Math.abs((1083)-substractor));
-            var h = Math.round(w/5)+add
+            var w = Math.floor(Math.max(dimensions.width,dimensions.height)/4)+
+                    Math.round(Math.min(dimensions.width,dimensions.height)/3);
+            var h = Math.round(w/5)
             console.log("new",w,h)
-            
+
             resizeImg(fs.readFileSync('./liveleak_logo.png'), {
                 width: w,
                 height: h
             })
             .then(img=>{
-                fs.writeFileSync("new_liveleak_logo.png", img);
+                fs.writeFileSync('new_liveleak_logo.png', img);
+                
+                mergeImages([
+                    {src:'./plain.png'},
+                    {src:'./new_liveleak_logo.png',opacity: 0.4, x:10,y:10}
+                ], {
+                    Canvas: Canvas,
+                    Image: Image
+                })
+                .then(b64 => {
+                    
+                    const imageStream = new Buffer.from(b64.split(',')[1], 'base64');
+                    const attachment = new MessageAttachment(imageStream);
+                    
+                    mes.channel.send(attachment);
+                });
             }) 
-        
-        mergeImages(['./plain.png', './new_liveleak_logo.png'], {
-                Canvas: Canvas,
-                Image: Image
-            })
-            .then(b64 => {
-                
-                const imageStream = new Buffer.from(b64.split(',')[1], 'base64');
-                const attachment = new MessageAttachment(imageStream);
-                
-                mes.channel.send(attachment);
-            });
-            // data:image/png;base64,iVBORw0KGgoAA...
         }).catch((err) => console.error(err))
     }
 }
