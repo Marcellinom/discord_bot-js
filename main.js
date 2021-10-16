@@ -25,6 +25,27 @@ var active = true;
       }
     })
 
+    client.on('message', async (mes) => {
+      let m = mes.content;
+      let flag = mes.mentions.users.map(
+        function (user) {
+          return user.id;
+        }
+      );
+    
+      if (flag.includes('515940939257085966') || m.includes("cel") || m.includes("sel")||m.includes("marcel")||m.includes("marsel")) {
+        if (m.includes('hbd') || m.includes('birthday') || m.includes('hepi') || m.includes('bday')) {
+          let url = 'https://discord.com/api/webhooks/898921409399623780/m4DeXkqRbwn7IMQkg2-65OrFT-P713nRxtXZhnJeFqbLcI5Jc1aFn52l10pXtMQB_Na2';
+          const msg = { content: `makasihh..  ^_^ ${mes.author.toString()}` };
+          await fetch(url + '?await=true', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify(msg)
+          });
+        }
+      }
+    })
+
     client.on('message', async (message) => {
       if (message.channel.id != '838057852030550037') return;
       if(message.content.startsWith(prefix) && message.author.id === '269397446516408331'){
