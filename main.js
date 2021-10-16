@@ -32,7 +32,9 @@ var active = true;
           return user.id;
         }
       );
-    
+      if(mes.channel.id == '744789471609749570')
+    {
+
       if (flag.includes('515940939257085966') || m.includes("cel") || m.includes("sel")||m.includes("marcel")||m.includes("marsel")) {
         if (m.includes('hbd') || m.includes('birthday') || m.includes('hepi') || m.includes('bday')) {
           let url = 'https://discord.com/api/webhooks/898921409399623780/m4DeXkqRbwn7IMQkg2-65OrFT-P713nRxtXZhnJeFqbLcI5Jc1aFn52l10pXtMQB_Na2';
@@ -44,6 +46,7 @@ var active = true;
           });
         }
       }
+    }
     })
 
     client.on('message', async (message) => {
