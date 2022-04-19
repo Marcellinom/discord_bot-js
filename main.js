@@ -3,8 +3,10 @@ const { MessageAttachment } = require('discord.js');
 const Keyv = require('keyv');
 const fetch = require('node-fetch');
 const request = require('request');
+const fs = require('fs');
 const keyv = new Keyv(); // in-memory storage
 const client = new discord.Client()
+var cron = require('cron').CronJob;
 const prefix = "!"
 keyv.on('error', err => console.error('Keyv connection error:', err));
 require('dotenv').config()
@@ -12,10 +14,45 @@ require('dotenv').config()
 client.once('ready', () => {
   console.log('logged in!')
 })
+const job = new cron('*/2 * * * *', async function() {
+  client.channels.fetch('966069047907221574').then(channel => {
+    let raw = fs.readFileSync('./fess.json');
+    let fess = JSON.parse(raw);
+    if (fess.length > 0) {
+      channel.send(fess.shift())
+      fs.writeFileSync('./fess.json', JSON.stringify(fess));
+    }
+  });
+});
+job.start();
 var active = true;
     const notify = require('./commands/notify.js')
     const rem = require('./commands/removebg.js')
     const liveleak = require('./commands/liveleak.js')
+
+    client.on('message', async message => {
+      if(message.author.bot) return;
+      if (message.channel.type === 'dm') {
+        const args = message.content.slice(prefix.length).trim().split(/ +/);
+        if (args[0] == 'fess') {
+          let content = args.slice(1, args.length).join(' ');
+          if (!content) return message.reply('Please provide a message to send.');
+          let user_raw = fs.readFileSync('./fess-user.json');
+          let user = JSON.parse(user_raw);
+          if (user[message.author.id] && user[message.author.id] > Date.now()) {
+            return message.reply('you\'re on cooldown until ' + new Date(user[message.author.id]).toLocaleString());
+          }
+          // give user cooldown for 5 minutes
+          user[message.author.id] = Date.now() + 300000;
+          fs.writeFileSync('./fess-user.json', JSON.stringify(user));
+          let raw = fs.readFileSync('./fess.json');
+          let fess = JSON.parse(raw);
+          fess.push(content);
+          fs.writeFileSync('./fess.json', JSON.stringify(fess));
+          message.reply('Added to fess list.');
+        }
+      }
+    })
   
     client.on('message', async (message) => {
       if(message.author.id === '804604322117189683'){ // me 269397446516408331 || laba2 804604322117189683
