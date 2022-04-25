@@ -34,6 +34,9 @@ var active = true;
       if(message.author.bot) return;
       if (message.channel.type === 'dm') {
         const args = message.content.slice(prefix.length).trim().split(/ +/);
+        if (message.mentionEveryone || message.content.includes('@everyone') || message.content.includes('@here')) {
+          return message.reply('No @everyone or @here please!')
+        }
         if (args[0] == 'fess') {
           let content = args.slice(1, args.length).join(' ');
           if (!content) return message.reply('Please provide a message to send.');
