@@ -40,10 +40,10 @@ var active = true;
           let user_raw = fs.readFileSync('./fess-user.json');
           let user = JSON.parse(user_raw);
           if (user[message.author.id] && user[message.author.id] > Date.now()) {
-            return message.reply('you\'re on cooldown for 5 minutes of your last accepted message');
+            return message.reply('you\'re on cooldown for 1 minutes of your last accepted message');
           }
-          // give user cooldown for 5 minutes
-          user[message.author.id] = Date.now() + 300000;
+          // give user cooldown for 1 minutes
+          user[message.author.id] = Date.now() + 60000;
           fs.writeFileSync('./fess-user.json', JSON.stringify(user));
           let raw = fs.readFileSync('./fess.json');
           let fess = JSON.parse(raw);
